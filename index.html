@@ -541,10 +541,57 @@ html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;v
   .hero-art{width:100%;}
   .hero-caption{display:block;}
 }
+
+/* ═══ PROMO BAR ═══ */
+:root{--promo-h:44px;}
+html{scroll-padding-top:76px;}
+.has-promo{scroll-padding-top:calc(var(--promo-h) + 76px);}
+.promo-bar{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;justify-content:center;gap:1.4rem;flex-wrap:wrap;background:#1a1615;color:#f3ece0;padding:.7rem 3rem;border-bottom:1px solid rgba(196,160,90,.4);transform:translateY(-100%);transition:transform .6s var(--ease);}
+.has-promo .promo-bar{transform:translateY(0);}
+.has-promo nav{top:var(--promo-h);}
+nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
+.promo-label{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-lt);}
+.promo-msg{font-family:'Raleway',sans-serif;font-size:.74rem;font-weight:300;letter-spacing:.04em;color:#f3ece0;}
+.promo-msg em{font-style:normal;color:var(--gold-lt);}
+.promo-cta{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:#1a1615;background:var(--gold-lt);padding:.5rem 1.35rem;text-decoration:none;transition:background .3s,transform .3s;}
+.promo-cta:hover{background:#fff;}
+.promo-ends{font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(243,236,224,.5);}
+.promo-close{position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:rgba(243,236,224,.55);font-size:1.15rem;line-height:1;transition:color .25s;}
+.promo-close:hover{color:#fff;}
+@media(max-width:768px){
+  .promo-bar{gap:.65rem;padding:.6rem 2.4rem;}
+  .promo-label,.promo-ends{display:none;}
+  .promo-msg{font-size:.62rem;line-height:1.5;}
+  .promo-cta{font-size:.44rem;padding:.42rem 1rem;letter-spacing:.24em;}
+}
 </style>
 </head>
 <body>
 
+<script>
+/* ═══ PROMO BAR — limited offer, auto-expires 1 Sep 2026 00:00 SAST ═══ */
+(function(){
+  var END = Date.parse('2026-08-31T22:00:00Z'); /* 00:00, 1 Sep 2026 SAST (UTC+2) */
+  window.closePromo = function(){
+    try{ localStorage.setItem('srPromoDismissed','1'); }catch(e){}
+    document.documentElement.classList.remove('has-promo');
+  };
+  var dismissed=false; try{ dismissed = localStorage.getItem('srPromoDismissed')==='1'; }catch(e){}
+  if(dismissed || Date.now() >= END) return;              /* expired or dismissed → never shows */
+  document.documentElement.classList.add('has-promo');
+  function sync(){ var b=document.getElementById('promoBar'); if(b) document.documentElement.style.setProperty('--promo-h', b.offsetHeight+'px'); }
+  addEventListener('load', sync); addEventListener('resize', sync); document.addEventListener('DOMContentLoaded', sync);
+  var ms = END - Date.now();                              /* auto-remove live if page stays open past expiry */
+  if(ms > 0 && ms < 2147483647) setTimeout(function(){ document.documentElement.classList.remove('has-promo'); }, ms);
+})();
+</script>
+<div class="promo-bar" id="promoBar" role="region" aria-label="Special offer">
+  <span class="promo-label">Limited Offer</span>
+  <span class="promo-msg">Book any photography collection &amp; your cinematic short film &mdash; worth <em>R15&thinsp;000</em> &mdash; is on us.</span>
+  <a class="promo-cta" href="#contact" onclick="if(window.closeMenu)closeMenu();">Enquire</a>
+  <span class="promo-ends">Ends 31 Aug</span>
+  <button class="promo-close" onclick="closePromo()" aria-label="Dismiss offer">&times;</button>
+</div>
 <div id="sr-loader" aria-hidden="true">
   <div class="ld-name"><span>S</span><span>K</span><span>Y</span><span>R</span><span>I</span><span>D</span><span>G</span><span>E</span></div>
   <div class="ld-sub">Collective</div>
