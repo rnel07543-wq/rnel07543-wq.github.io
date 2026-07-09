@@ -162,6 +162,16 @@ section{padding:6rem 5rem;}
 .col-love-story em{font-style:italic;color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1rem;}
 .col-love-story strong{font-weight:600;color:var(--text);}
 .col-grid{display:flex;flex-direction:column;gap:1px;background:rgba(196,160,90,.07);perspective:1200px;}
+.col-toggle{display:flex;justify-content:center;gap:.6rem;margin:0 auto 3rem;flex-wrap:wrap;}
+.col-tab{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold-text);background:transparent;border:1px solid rgba(196,160,90,.3);padding:.85rem 2.3rem;cursor:pointer;transition:background .3s,color .3s,border-color .3s;}
+.col-tab:hover{border-color:var(--gold);color:var(--gold-dk);}
+.col-tab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+.col-view{display:none;}
+.col-view.active{display:flex;}
+@media(max-width:768px){
+  .col-toggle{gap:.4rem;margin-bottom:2rem;}
+  .col-tab{font-size:.48rem;padding:.65rem 1.3rem;letter-spacing:.2em;}
+}
 .col-card{
   background:var(--bg);
   display:grid;grid-template-columns:220px 1fr;
@@ -576,6 +586,17 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
   .promo-msg{font-size:.74rem;line-height:1.45;font-weight:700;}
   .promo-cta{font-size:.5rem;padding:.55rem 1.2rem;letter-spacing:.22em;}
 }
+
+.section-cta{text-align:center;margin-top:4rem;padding-top:3rem;border-top:1px solid rgba(196,160,90,.12);}
+.section-cta p{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;font-weight:300;color:var(--text);margin-bottom:1.4rem;}
+.section-cta p em{color:var(--gold);}
+.section-cta-btn{display:inline-block;font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.4em;text-transform:uppercase;color:#fff;background:var(--gold);padding:.9rem 2.6rem;text-decoration:none;transition:background .3s;}
+.section-cta-btn:hover{background:var(--gold-dk);}
+@media(max-width:768px){
+  .section-cta{margin-top:2.5rem;padding-top:2rem;}
+  .section-cta p{font-size:1.05rem;}
+  .section-cta-btn{font-size:.46rem;padding:.75rem 1.8rem;letter-spacing:.28em;}
+}
 </style>
 </head>
 <body>
@@ -669,6 +690,12 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil, Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Bridal Portrait &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-2025.webp?v=2" alt="Bride holding her bouquet in an off-shoulder gown, Pretoria wedding" width="1108" height="1419" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;"></div><div class="gov"><span>Bridal &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss in black and white, Pretoria wedding" width="1114" height="1412" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>First Kiss &mdash; 2025</span></div></div>
+  </div>
+
+  <div class="section-cta fade">
+    <p>Love what you <em>see?</em></p>
+    <a href="#contact" class="section-cta-btn">Let&rsquo;s Talk</a>
+  </div>
 </section>
 
 <section class="collections" id="collections">
@@ -680,11 +707,119 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
   <div class="col-love-story fade">
     <p>Your complete story lives in both <em>frames and motion.</em> Our hybrid collections weave them together &mdash; but the choice to go <strong>hybrid</strong>, <strong>photography-only</strong>, or <strong>video-only</strong> is yours to make.</p>
   </div>
-  <div class="col-grid">
+  <div class="col-toggle fade" role="tablist" aria-label="Choose your capture type">
+    <button class="col-tab active" role="tab" aria-selected="true" data-view="photo" onclick="setColView('photo',this)">Photo</button>
+    <button class="col-tab" role="tab" aria-selected="false" data-view="video" onclick="setColView('video',this)">Video</button>
+    <button class="col-tab" role="tab" aria-selected="false" data-view="unified" onclick="setColView('unified',this)">Unified</button>
+  </div>
+
+  <div class="col-grid col-view active" data-view="photo">
+    <div class="col-card fade">
+      <div class="col-left" data-num="I">
+        <div><div class="col-tier-badge">Horizon</div><div class="col-name">Horizon <em style="font-style:italic;color:var(--gold)">Photo</em></div></div>
+        <div class="col-coverage">Photo Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">An intimate, photography-only telling of your day.</p>
+        <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R15 500</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Horizon','Photo only')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="col-card fade" style="transition-delay:.1s">
+      <div class="col-left" data-num="II">
+        <div><div class="col-tier-badge">Altitude</div><div class="col-name">Altitude <em style="font-style:italic;color:var(--gold)">Photo</em></div></div>
+        <div class="col-coverage">Photo Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A refined photography experience across your entire wedding day.</p>
+        <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R24 500</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Altitude','Photo only')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="col-card fade" style="transition-delay:.2s">
+      <div class="col-left" data-num="III">
+        <div><div class="col-tier-badge">Apex</div><div class="col-name">Apex <em style="font-style:italic;color:var(--gold)">Photo</em></div></div>
+        <div class="col-coverage">Photo Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">An editorial, fully-immersive photography production.</p>
+        <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R34 500</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Apex','Photo only')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="col-card fade" style="transition-delay:.3s">
+      <div class="col-left" data-num="IV">
+        <div><div class="col-tier-badge">Observatory</div><div class="col-name">Observatory <em style="font-style:italic;color:var(--gold)">Photo</em></div></div>
+        <div class="col-coverage">Photo Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A bespoke photography-only experience, tailored entirely to your vision.</p>
+        <p class="col-note" style="margin-top:1.2rem;">Pricing on enquiry &middot; Every Observatory package is entirely bespoke</p>
+        <div class="col-price-row"><span class="col-price-label">Base Price</span><span class="col-price">R45 000</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Observatory','Photo only')">Book Now</a>
+      </div>
+    </div>
+  </div>
+
+<div class="col-grid col-view" data-view="video">
+    <div class="col-card fade">
+      <div class="col-left" data-num="I">
+        <div><div class="col-tier-badge">Horizon</div><div class="col-name">Horizon <em style="font-style:italic;color:var(--gold)">Video</em></div></div>
+        <div class="col-coverage">Video Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A beautifully cut film capturing the essence of your day.</p>
+        <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R17 500</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Horizon','Video only')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="col-card fade" style="transition-delay:.1s">
+      <div class="col-left" data-num="II">
+        <div><div class="col-tier-badge">Altitude</div><div class="col-name">Altitude <em style="font-style:italic;color:var(--gold)">Video</em></div></div>
+        <div class="col-coverage">Video Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A cinematic short film telling your complete wedding story.</p>
+        <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R27 500</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Altitude','Video only')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="col-card fade" style="transition-delay:.2s">
+      <div class="col-left" data-num="III">
+        <div><div class="col-tier-badge">Apex</div><div class="col-name">Apex <em style="font-style:italic;color:var(--gold)">Video</em></div></div>
+        <div class="col-coverage">Video Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A luxury cinematic production, framed like a feature film.</p>
+        <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R39 500</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Apex','Video only')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="col-card fade" style="transition-delay:.3s">
+      <div class="col-left" data-num="IV">
+        <div><div class="col-tier-badge">Observatory</div><div class="col-name">Observatory <em style="font-style:italic;color:var(--gold)">Video</em></div></div>
+        <div class="col-coverage">Video Only</div>
+      </div>
+      <div class="col-right">
+        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A bespoke cinematic experience, tailored entirely to your vision.</p>
+        <p class="col-note" style="margin-top:1.2rem;">Pricing on enquiry &middot; Every Observatory package is entirely bespoke</p>
+        <div class="col-price-row"><span class="col-price-label">Base Price</span><span class="col-price">R55 000</span></div>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Observatory','Video only')">Book Now</a>
+      </div>
+    </div>
+  </div>
+
+<div class="col-grid col-view" data-view="unified">
 
     <div class="col-card fade">
       <div class="col-left" data-num="I">
-        <div><div class="col-tier-badge">Horizon</div><div class="col-name">Horizon <em style="font-style:italic;color:var(--gold)">Collection</em></div></div>
+        <div><div class="col-tier-badge">Horizon</div><div class="col-name">Horizon <em style="font-style:italic;color:var(--gold)">Unified</em></div></div>
         <div class="col-coverage">6 Hours Coverage</div>
       </div>
       <div class="col-right">
@@ -699,7 +834,7 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
           <li>Formalities (if time allows)</li>
         </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R22 500</span></div>
-        <a href="#contact" class="col-book-btn">Book Now</a>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Horizon','Photo + Video')">Book Now</a>
       </div>
     </div>
 
@@ -707,7 +842,7 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       <div class="col-left" data-num="II">
         <div>
           <div class="col-tier-badge">Altitude</div>
-          <div class="col-name">Altitude <em style="font-style:italic;color:var(--gold)">Collection</em></div>
+          <div class="col-name">Altitude <em style="font-style:italic;color:var(--gold)">Unified</em></div>
         </div>
         <div class="col-coverage">8 Hours Coverage</div>
       </div>
@@ -724,13 +859,13 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
           <li>Some formalities &amp; speeches (if time allows)</li>
         </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R34 500</span></div>
-        <a href="#contact" class="col-book-btn">Book Now</a>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Altitude','Photo + Video')">Book Now</a>
       </div>
     </div>
 
     <div class="col-card fade" style="transition-delay:.2s">
       <div class="col-left" data-num="III">
-        <div><div class="col-tier-badge">Apex</div><div class="col-name">Apex <em style="font-style:italic;color:var(--gold)">Collection</em></div></div>
+        <div><div class="col-tier-badge">Apex</div><div class="col-name">Apex <em style="font-style:italic;color:var(--gold)">Unified</em></div></div>
         <div class="col-coverage">10 Hours Coverage</div>
       </div>
       <div class="col-right">
@@ -747,13 +882,13 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
           <li>Speeches &amp; formalities</li>
         </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R49 500</span></div>
-        <a href="#contact" class="col-book-btn">Book Now</a>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Apex','Photo + Video')">Book Now</a>
       </div>
     </div>
 
     <div class="col-card fade" style="transition-delay:.3s">
       <div class="col-left" data-num="IV">
-        <div><div class="col-tier-badge">Observatory</div><div class="col-name">Observatory <em style="font-style:italic;color:var(--gold)">Collection</em></div></div>
+        <div><div class="col-tier-badge">Observatory</div><div class="col-name">Observatory <em style="font-style:italic;color:var(--gold)">Unified</em></div></div>
         <div class="col-coverage">Multi-Day &amp; Destination</div>
       </div>
       <div class="col-right">
@@ -761,9 +896,11 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
         <p style="font-family:'Raleway',sans-serif;font-size:.88rem;color:var(--mist);line-height:2;letter-spacing:.03em;">We customise everything to your needs &mdash; your story, your way. Get in touch and let&rsquo;s build something together.</p>
         <p class="col-note" style="margin-top:1.5rem;">Pricing on enquiry &middot; Every Observatory package is entirely bespoke</p>
         <div class="col-price-row"><span class="col-price-label">Base Price</span><span class="col-price">R65 000</span></div>
-        <a href="#contact" class="col-book-btn">Book Now</a>
+        <a href="#contact" class="col-book-btn" onclick="bookNow('Observatory','Photo + Video')">Book Now</a>
       </div>
     </div>
+
+  </div>
 
   <!-- Add-ons -->
   <div class="col-addons fade">
@@ -825,6 +962,12 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
     <span class="atag">Cape Town</span><span class="atag">International</span>
     <span class="atag">Photography</span><span class="atag">Cinematography</span>
     <span class="atag">Drone</span><span class="atag">Film</span>
+  </div>
+
+  <div class="section-cta fade">
+    <p>Ready to tell your <em>story?</em></p>
+    <a href="#contact" class="section-cta-btn">Get In Touch</a>
+  </div>
 </section>
 
 <section class="contact" id="contact">
@@ -1113,6 +1256,25 @@ function closeMenu(){
   ham.classList.remove('open');
   links.classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// Book Now: pre-fill the enquiry widget with the chosen collection & capture type
+function bookNow(collection, service){
+  enquiryData.collection = collection;
+  enquiryData.service = service;
+  stepHistory = [];
+  goStep(1);
+}
+
+// Collections: Photo / Video / Unified toggle
+function setColView(view, btn){
+  document.querySelectorAll('.col-tab').forEach(function(b){
+    b.classList.remove('active'); b.setAttribute('aria-selected','false');
+  });
+  btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+  document.querySelectorAll('.col-view').forEach(function(g){
+    g.classList.toggle('active', g.getAttribute('data-view') === view);
+  });
 }
 
 // Nav solid on scroll
