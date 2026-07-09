@@ -545,30 +545,29 @@ html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;v
   .hero-caption{display:block;}
 }
 
-/* ═══ PROMO BAR — bold, high-contrast, impossible to miss ═══ */
+/* ═══ PROMO BAR — refined: on-brand dark ground, gold as accent only ═══ */
 :root{--promo-h:60px;}
 html{scroll-padding-top:76px;}
 .has-promo{scroll-padding-top:calc(var(--promo-h) + 76px);}
-.promo-bar{position:fixed;top:0;left:0;right:0;z-index:101;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:1.6rem;flex-wrap:wrap;background:linear-gradient(100deg,var(--gold-dk),var(--gold) 45%,var(--gold-lt) 70%,var(--gold));background-size:220% 100%;color:#1a1615;padding:1rem 3.2rem;box-shadow:0 2px 28px rgba(196,160,90,.55);transform:translateY(-100%);transition:transform .6s var(--ease);}
-.has-promo .promo-bar{transform:translateY(0);animation:promoSheen 7s ease-in-out infinite,promoGlow 2.4s ease-in-out infinite;}
+.promo-bar{position:fixed;top:0;left:0;right:0;z-index:101;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:1.6rem;flex-wrap:wrap;background:#1a1615;color:#f3ece0;padding:1rem 3.2rem;border-bottom:1px solid rgba(196,160,90,.4);box-shadow:0 4px 30px rgba(0,0,0,.18);transform:translateY(-100%);transition:transform .6s var(--ease);}
+.has-promo .promo-bar{transform:translateY(0);}
 .has-promo nav{top:var(--promo-h);}
 nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
-@keyframes promoSheen{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
-@keyframes promoGlow{0%,100%{box-shadow:0 2px 28px rgba(196,160,90,.55);}50%{box-shadow:0 2px 42px rgba(196,160,90,.9);}}
-.promo-dot{width:8px;height:8px;border-radius:50%;background:#1a1615;flex-shrink:0;animation:promoPulseDot 1.4s ease-in-out infinite;}
-@keyframes promoPulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
-.promo-label{font-family:'Cinzel',serif;font-weight:600;font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:#1a1615;}
-.promo-msg{font-family:'Raleway',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:.01em;color:#1a1615;}
-.promo-msg em{font-style:normal;font-weight:800;color:#fff;text-shadow:0 0 14px rgba(255,255,255,.5);}
-.promo-cta{font-family:'Cinzel',serif;font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dk);background:#1a1615;padding:.7rem 1.7rem;text-decoration:none;transition:background .3s,color .3s,transform .3s;animation:promoBounce 1.8s ease-in-out infinite;}
-.promo-cta:hover{background:#000;color:#fff;}
-@keyframes promoBounce{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
-.promo-ends{font-family:'Cinzel',serif;font-weight:600;font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(26,22,21,.65);}
-.promo-close{position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:rgba(26,22,21,.12);border-radius:50%;border:none;cursor:pointer;color:#1a1615;font-size:1.2rem;line-height:1;transition:background .25s,color .25s;}
-.promo-close:hover{background:#1a1615;color:#fff;}
+.promo-bar::before{content:'';position:absolute;top:0;bottom:0;width:34%;background:linear-gradient(100deg,transparent,rgba(196,160,90,.14) 45%,rgba(223,192,122,.22) 50%,rgba(196,160,90,.14) 55%,transparent);animation:promoSheen 6s ease-in-out infinite;}
+@keyframes promoSheen{0%{left:-40%;}100%{left:120%;}}
+.promo-dot{width:7px;height:7px;border-radius:50%;background:var(--gold-lt);flex-shrink:0;animation:promoPulseDot 1.8s ease-in-out infinite;}
+@keyframes promoPulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.72);}}
+.promo-label{font-family:'Cinzel',serif;font-weight:400;font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:var(--gold-lt);}
+.promo-msg{font-family:'Raleway',sans-serif;font-size:.88rem;font-weight:400;letter-spacing:.01em;color:#f3ece0;}
+.promo-msg em{font-style:italic;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.15em;color:var(--gold-lt);}
+.promo-cta{font-family:'Cinzel',serif;font-size:.56rem;font-weight:400;letter-spacing:.32em;text-transform:uppercase;color:#1a1615;background:var(--gold);padding:.68rem 1.7rem;text-decoration:none;transition:background .3s,transform .3s;}
+.promo-cta:hover{background:var(--gold-lt);}
+.promo-ends{font-family:'Cinzel',serif;font-weight:400;font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(243,236,224,.45);}
+.promo-close{position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:rgba(243,236,224,.5);font-size:1.2rem;line-height:1;transition:color .25s;}
+.promo-close:hover{color:#fff;}
 @media(prefers-reduced-motion:reduce){
-  .has-promo .promo-bar{animation:none;}
-  .promo-dot,.promo-cta{animation:none;}
+  .promo-bar::before{animation:none;}
+  .promo-dot{animation:none;}
 }
 @media(max-width:768px){
   :root{--promo-h:96px;}
