@@ -536,8 +536,11 @@ html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;v
 .hero .hero-btn-ghost:hover{border-color:var(--gold-dk);color:var(--gold-dk);background:transparent;}
 .hero-art{position:relative;justify-self:end;width:min(100%,500px);}
 .hero-frame{position:absolute;inset:0;transform:translate(18px,18px);border:1px solid rgba(196,160,90,.45);pointer-events:none;}
-.hero-mask{position:relative;z-index:1;overflow:hidden;background:var(--bg2);}
-.hero-mask img{width:100%;height:auto;display:block;}
+.hero-mask{position:relative;z-index:1;overflow:hidden;background:var(--bg2);aspect-ratio:1110/1417;}
+.hero-mask img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;}
+.hero-mask img:first-of-type{opacity:1;}
+html.no-fx .hero-loop-img{opacity:0!important;}
+html.no-fx .hero-loop-img:first-of-type{opacity:1!important;}
 .hero-caption{position:static;margin-top:1.1rem;text-align:right;color:rgba(107,95,80,.6);}
 .hero .scroll-ind{opacity:.45;}
 .hero .scroll-ind span{color:var(--mist);}
@@ -668,10 +671,12 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
     </div>
     <div class="hero-art">
       <div class="hero-frame" aria-hidden="true"></div>
-      <div class="hero-mask">
-        <img src="images/hero-veil.webp" alt="Bride and groom embracing beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" fetchpriority="high">
+      <div class="hero-mask" id="heroLoop">
+        <img class="hero-loop-img" src="images/hero-veil.webp" alt="Bride and groom embracing beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" fetchpriority="high" data-caption="The Veil &mdash; Pretoria, 2025">
+        <img class="hero-loop-img" src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1114" height="1412" data-caption="First Kiss &mdash; Pretoria, 2025">
+        <img class="hero-loop-img" src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" data-caption="Bridal Portrait &mdash; Pretoria, 2025">
       </div>
-      <p class="hero-caption">The Veil &mdash; Pretoria, 2025</p>
+      <p class="hero-caption" id="heroCaption">The Veil &mdash; Pretoria, 2025</p>
     </div>
   </div>
   <div class="scroll-ind"><span>Scroll</span><div class="scroll-line"></div></div>
@@ -1445,7 +1450,7 @@ document.addEventListener('DOMContentLoaded', function(){
     window.__srEntered = true;
     try { sessionStorage.setItem('sr_seen','1'); } catch(e){}
     var tl = gsap.timeline({
-      onComplete: function(){ if(loader) loader.style.display='none'; if(hasST) ScrollTrigger.refresh(); }
+      onComplete: function(){ if(loader) loader.style.display='none'; if(hasST) ScrollTrigger.refresh(); startHeroLoop(); }
     });
     tl.to(loader, {yPercent:-100, duration:1.1, ease:IO})
       .to('.hero-mask', {clipPath:'inset(0% 0 0 0)', duration:1.5, ease:EXPO}, '-=.55')
@@ -1458,6 +1463,42 @@ document.addEventListener('DOMContentLoaded', function(){
       .to('nav', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=.85')
       .to('.hero-caption, .hero .scroll-ind', {autoAlpha:1, duration:1.1}, '-=.6');
   });
+
+
+  /* Hero loop — slow Ken Burns crossfade through real client photography */
+  function startHeroLoop(){
+    var slides = document.querySelectorAll('.hero-loop-img');
+    if(slides.length < 2) return;
+    var captionEl = document.getElementById('heroCaption');
+    var HOLD = 5.2, FADE = 1.3, ZOOM = 1.08;
+    var i = 0;
+    gsap.set(slides, {scale:1});
+
+    function advance(){
+      var curr = slides[i];
+      var ni = (i + 1) % slides.length;
+      var next = slides[ni];
+
+      gsap.set(next, {scale:1});
+      gsap.to(curr, {scale:ZOOM, duration:HOLD + FADE, ease:'sine.out'});
+
+      gsap.delayedCall(HOLD, function(){
+        gsap.to(next, {opacity:1, duration:FADE, ease:'power1.inOut'});
+        gsap.to(curr, {opacity:0, duration:FADE, ease:'power1.inOut', onComplete:function(){
+          i = ni;
+          advance();
+        }});
+        var cap = next.getAttribute('data-caption');
+        if(captionEl && cap){
+          gsap.to(captionEl, {opacity:0, duration:.4, onComplete:function(){
+            captionEl.innerHTML = cap;
+            gsap.to(captionEl, {opacity:1, duration:.6});
+          }});
+        }
+      });
+    }
+    advance();
+  }
 
   /* Act III — scroll storytelling */
   if(hasST){
