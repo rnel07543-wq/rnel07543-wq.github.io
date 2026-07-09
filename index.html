@@ -514,7 +514,8 @@ html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;v
 }
 
 /* ═══ GALLERY-WALL HERO — art at native resolution, ivory canvas ═══ */
-.hero{background:var(--bg);display:flex;align-items:center;padding:8rem 5rem 5.5rem;}
+.hero{background:var(--bg);display:flex;align-items:center;padding:8rem 5rem 5.5rem;transition:padding-top .4s var(--ease);}
+.has-promo .hero{padding-top:calc(8rem + var(--promo-h));}
 .hero-inner{display:grid;grid-template-columns:1.12fr .88fr;gap:clamp(2.5rem,6vw,5.5rem);align-items:center;width:100%;max-width:1280px;margin:0 auto;}
 .hero-copy{position:relative;z-index:2;text-align:left;}
 .hero h1{color:var(--text);text-shadow:none;font-size:clamp(2.7rem,5.6vw,5.2rem);}
@@ -533,36 +534,48 @@ html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;v
 .hero .scroll-line{background:linear-gradient(to bottom,var(--gold),transparent);}
 @media(max-width:1024px){
   .hero{padding:7.5rem 3rem 4.5rem;}
+  .has-promo .hero{padding-top:calc(7.5rem + var(--promo-h));}
   .hero-inner{grid-template-columns:1fr;gap:3rem;}
   .hero-art{justify-self:center;width:min(100%,440px);}
 }
 @media(max-width:768px){
   .hero{padding:6.5rem 1.5rem 4rem;}
+  .has-promo .hero{padding-top:calc(6.5rem + var(--promo-h));}
   .hero-art{width:100%;}
   .hero-caption{display:block;}
 }
 
-/* ═══ PROMO BAR ═══ */
-:root{--promo-h:44px;}
+/* ═══ PROMO BAR — bold, high-contrast, impossible to miss ═══ */
+:root{--promo-h:60px;}
 html{scroll-padding-top:76px;}
 .has-promo{scroll-padding-top:calc(var(--promo-h) + 76px);}
-.promo-bar{position:fixed;top:0;left:0;right:0;z-index:101;display:flex;align-items:center;justify-content:center;gap:1.4rem;flex-wrap:wrap;background:#1a1615;color:#f3ece0;padding:.7rem 3rem;border-bottom:1px solid rgba(196,160,90,.4);transform:translateY(-100%);transition:transform .6s var(--ease);}
-.has-promo .promo-bar{transform:translateY(0);}
+.promo-bar{position:fixed;top:0;left:0;right:0;z-index:101;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:1.6rem;flex-wrap:wrap;background:linear-gradient(100deg,var(--gold-dk),var(--gold) 45%,var(--gold-lt) 70%,var(--gold));background-size:220% 100%;color:#1a1615;padding:1rem 3.2rem;box-shadow:0 2px 28px rgba(196,160,90,.55);transform:translateY(-100%);transition:transform .6s var(--ease);}
+.has-promo .promo-bar{transform:translateY(0);animation:promoSheen 7s ease-in-out infinite,promoGlow 2.4s ease-in-out infinite;}
 .has-promo nav{top:var(--promo-h);}
 nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
-.promo-label{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-lt);}
-.promo-msg{font-family:'Raleway',sans-serif;font-size:.74rem;font-weight:300;letter-spacing:.04em;color:#f3ece0;}
-.promo-msg em{font-style:normal;color:var(--gold-lt);}
-.promo-cta{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:#1a1615;background:var(--gold-lt);padding:.5rem 1.35rem;text-decoration:none;transition:background .3s,transform .3s;}
-.promo-cta:hover{background:#fff;}
-.promo-ends{font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(243,236,224,.5);}
-.promo-close{position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:rgba(243,236,224,.55);font-size:1.15rem;line-height:1;transition:color .25s;}
-.promo-close:hover{color:#fff;}
+@keyframes promoSheen{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+@keyframes promoGlow{0%,100%{box-shadow:0 2px 28px rgba(196,160,90,.55);}50%{box-shadow:0 2px 42px rgba(196,160,90,.9);}}
+.promo-dot{width:8px;height:8px;border-radius:50%;background:#1a1615;flex-shrink:0;animation:promoPulseDot 1.4s ease-in-out infinite;}
+@keyframes promoPulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+.promo-label{font-family:'Cinzel',serif;font-weight:600;font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:#1a1615;}
+.promo-msg{font-family:'Raleway',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:.01em;color:#1a1615;}
+.promo-msg em{font-style:normal;font-weight:800;color:#fff;text-shadow:0 0 14px rgba(255,255,255,.5);}
+.promo-cta{font-family:'Cinzel',serif;font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-dk);background:#1a1615;padding:.7rem 1.7rem;text-decoration:none;transition:background .3s,color .3s,transform .3s;animation:promoBounce 1.8s ease-in-out infinite;}
+.promo-cta:hover{background:#000;color:#fff;}
+@keyframes promoBounce{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+.promo-ends{font-family:'Cinzel',serif;font-weight:600;font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(26,22,21,.65);}
+.promo-close{position:absolute;right:1rem;top:50%;transform:translateY(-50%);width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:rgba(26,22,21,.12);border-radius:50%;border:none;cursor:pointer;color:#1a1615;font-size:1.2rem;line-height:1;transition:background .25s,color .25s;}
+.promo-close:hover{background:#1a1615;color:#fff;}
+@media(prefers-reduced-motion:reduce){
+  .has-promo .promo-bar{animation:none;}
+  .promo-dot,.promo-cta{animation:none;}
+}
 @media(max-width:768px){
-  .promo-bar{gap:.65rem;padding:.6rem 2.4rem;}
-  .promo-label,.promo-ends{display:none;}
-  .promo-msg{font-size:.62rem;line-height:1.5;}
-  .promo-cta{font-size:.44rem;padding:.42rem 1rem;letter-spacing:.24em;}
+  :root{--promo-h:96px;}
+  .promo-bar{gap:.6rem;padding:.85rem 2.6rem;}
+  .promo-label,.promo-ends,.promo-dot{display:none;}
+  .promo-msg{font-size:.74rem;line-height:1.45;font-weight:700;}
+  .promo-cta{font-size:.5rem;padding:.55rem 1.2rem;letter-spacing:.22em;}
 }
 </style>
 </head>
@@ -586,6 +599,7 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 })();
 </script>
 <div class="promo-bar" id="promoBar" role="region" aria-label="Special offer">
+  <span class="promo-dot" aria-hidden="true"></span>
   <span class="promo-label">Limited Offer</span>
   <span class="promo-msg">Book any photography collection &amp; your cinematic short film &mdash; worth <em>R15&thinsp;000</em> &mdash; is on us.</span>
   <a class="promo-cta" href="#contact" onclick="if(window.closeMenu)closeMenu();">Enquire</a>
