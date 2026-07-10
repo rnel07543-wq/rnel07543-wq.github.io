@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google tag (gtag.js) — REPLACE "AW-REPLACE_ME" below with your real Google Ads Conversion ID (looks like AW-123456789) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-REPLACE_ME"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-REPLACE_ME');
+</script>
 <meta name="google-site-verification" content="JHpQb1V2Ha78mcr1bDtEyOTQp7oBhIyDvy7HKEw6JlM" />
 <title>SkyRidge Collective | Wedding Photographer &amp; Videographer — Pretoria</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -1238,6 +1246,25 @@ function sendEnquiry(){
   var msg = encodeURIComponent(lines.join('\n'));
 
   window.open('https://wa.me/27658267525?text=' + msg, '_blank');
+
+  // --- Conversion tracking: fires once, right here, only on a real successful submission ---
+  // Google Ads conversion — REPLACE "AW-REPLACE_ME/REPLACE_WITH_CONVERSION_LABEL" with your real
+  // Conversion ID/Label pair from Google Ads (Tools > Conversions > your action > "Tag setup").
+  if (typeof gtag === 'function') {
+    gtag('event', 'conversion', {
+      'send_to': 'AW-REPLACE_ME/REPLACE_WITH_CONVERSION_LABEL',
+      'value': 1.0,
+      'currency': 'ZAR'
+    });
+  }
+  // Backup signal outside Google Ads (dataLayer) — read this into GA4/GTM later if you connect one.
+  if (window.dataLayer) {
+    window.dataLayer.push({
+      'event': 'generate_lead',
+      'lead_source': 'enquiry_form'
+    });
+  }
+  // --- end conversion tracking ---
 
   const w = document.getElementById('enquiry');
   w.innerHTML = `
