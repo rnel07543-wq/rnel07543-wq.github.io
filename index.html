@@ -56,7 +56,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="images/hero-veil.webp">
+<link rel="preload" as="image" href="images/hero-poster.webp">
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500&amp;family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&amp;family=Raleway:wght@200;300;400&amp;display=swap" rel="stylesheet">
@@ -457,6 +457,7 @@ a:focus-visible,button:focus-visible,.gcell:focus-visible,.eq-opt:focus-visible,
 .ld-presents{font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.75em;text-transform:uppercase;color:rgba(107,95,80,.55);padding-left:.75em;}
 .no-fx #sr-loader{display:none!important;}
 html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;visibility:visible!important;}
+html.no-fx .letterbox{height:0!important;}
 
 /* Cinematic hero */
 .hero{min-height:100vh;min-height:100svh;padding:0;display:block;background:#141210;overflow:hidden;}
@@ -552,8 +553,10 @@ html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;v
 .hero-mask{position:relative;z-index:1;overflow:hidden;background:var(--bg2);aspect-ratio:1110/1417;}
 .hero-mask img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;}
 .hero-mask img:first-of-type{opacity:1;}
+.hero-mask video{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:cover;display:block;opacity:0;pointer-events:none;}
 html.no-fx .hero-loop-img{opacity:0!important;}
 html.no-fx .hero-loop-img:first-of-type{opacity:1!important;}
+html.no-fx .hero-mask video{display:none!important;}
 .hero-caption{position:static;margin-top:1.1rem;text-align:right;color:rgba(107,95,80,.6);}
 .hero .scroll-ind{opacity:.45;}
 .hero .scroll-ind span{color:var(--mist);}
@@ -613,6 +616,32 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
   .section-cta p{font-size:1.05rem;}
   .section-cta-btn{font-size:.46rem;padding:.75rem 1.8rem;letter-spacing:.28em;}
 }
+
+/* ═══ Full-bleed cinematic hero (video-ready design) ═══ */
+.hero{min-height:100vh;min-height:100svh;padding:0;display:block;background:#141210;overflow:hidden;}
+.hero-media{position:absolute;inset:0;}
+.hero-media .hero-mask{position:absolute;inset:0;aspect-ratio:unset;background:none;}
+.hero-media .hero-mask video,.hero-media .hero-mask img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.hero-scrim{position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(to top,rgba(16,13,10,.7) 0%,rgba(16,13,10,.25) 32%,rgba(16,13,10,0) 56%),linear-gradient(to bottom,rgba(0,0,0,.35),rgba(0,0,0,0) 18%);}
+.hero-content{position:absolute;left:clamp(1.4rem,6vw,6rem);bottom:clamp(2.4rem,10vh,6.5rem);max-width:820px;text-align:left;z-index:2;}
+.hero h1{opacity:1;color:#fff;text-shadow:0 2px 28px rgba(0,0,0,.35);font-size:clamp(2.7rem,6vw,5.6rem);}
+.hero h1 em{color:var(--gold-lt);}
+.hero .hero-eyebrow{color:#e8d5a4;text-shadow:0 1px 12px rgba(0,0,0,.4);}
+.hero .hero-sub{color:rgba(255,255,255,.85);margin-top:1rem;}
+.hero-cta{justify-content:flex-start;margin-top:2.1rem;}
+.hero .hero-btn-ghost{color:#fff;border-color:rgba(255,255,255,.5);}
+.hero .hero-btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.15);color:#fff;}
+.hero-caption{position:absolute;right:2.2rem;bottom:2.2rem;z-index:2;color:rgba(255,255,255,.6);}
+.hero .scroll-ind{z-index:2;}
+.hero .scroll-ind span{color:rgba(255,255,255,.8);}
+.hero .scroll-line{background:linear-gradient(to bottom,#fff,transparent);}
+
+/* Entry: "The Aperture" — shutter-close, iris-open, focus pull, colour grade */
+.hero-media{filter:blur(0px) saturate(1);will-change:clip-path,filter;}
+#sr-loader{will-change:clip-path;}
+.letterbox{position:absolute;left:0;right:0;height:0;background:#0b0908;z-index:3;pointer-events:none;}
+.letterbox-top{top:0;}
+.letterbox-bottom{bottom:0;}
 </style>
 </head>
 <body>
@@ -672,27 +701,29 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 
 
 <section class="hero" id="top">
-  <div class="hero-inner">
-    <div class="hero-copy">
-      <p class="hero-eyebrow">Wedding Photography &amp; Cinematography</p>
-      <h1><span class="hl-line"><span>We frame what</span></span><span class="hl-line"><span>words cannot <em>hold.</em></span></span></h1>
-      <p class="hero-sub">Cinematic storytelling &nbsp;&middot;&nbsp; Pretoria &amp; Beyond</p>
-      <div class="hero-cta">
-        <a href="#gallery" class="hero-btn hero-btn-primary">View Our Work</a>
-        <a href="#contact" class="hero-btn hero-btn-ghost">Enquire</a>
-      </div>
-    </div>
-    <div class="hero-art">
-      <div class="hero-frame" aria-hidden="true"></div>
-      <div class="hero-mask" id="heroLoop">
-        <img class="hero-loop-img" src="images/hero-veil.webp" alt="Bride and groom embracing beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" fetchpriority="high" data-caption="The Veil &mdash; Pretoria, 2025">
-        <img class="hero-loop-img" src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1114" height="1412" data-caption="First Kiss &mdash; Pretoria, 2025">
-        <img class="hero-loop-img" src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" data-caption="Bridal Portrait &mdash; Pretoria, 2025">
-      </div>
-      <p class="hero-caption" id="heroCaption">The Veil &mdash; Pretoria, 2025</p>
+  <div class="hero-media">
+    <div class="hero-mask" id="heroLoop">
+      <video id="heroVideo" src="images/hero-loop.mp4?v=2" poster="images/hero-poster.webp" data-caption="Our Story &mdash; Pretoria, 2025" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="heroVideoB" src="images/hero-loop.mp4?v=2" muted playsinline preload="auto" aria-hidden="true"></video>
+      <img class="hero-loop-img" src="images/hero-poster.webp" alt="Wedding bouquet detail — SkyRidge Collective wedding photography, Pretoria" width="1920" height="1080" fetchpriority="high" data-caption="The Details &mdash; Pretoria, 2025">
+      <img class="hero-loop-img" src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1114" height="1412" data-caption="First Kiss &mdash; Pretoria, 2025">
+      <img class="hero-loop-img" src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" data-caption="Bridal Portrait &mdash; Pretoria, 2025">
     </div>
   </div>
-  <div class="scroll-ind"><span>Scroll</span><div class="scroll-line"></div></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Wedding Photography &amp; Cinematography</p>
+    <h1><span class="hl-line"><span>We frame what</span></span><span class="hl-line"><span>words cannot <em>hold.</em></span></span></h1>
+    <p class="hero-sub">Cinematic storytelling &nbsp;&middot;&nbsp; Pretoria &amp; Beyond</p>
+    <div class="hero-cta">
+      <a href="#gallery" class="hero-btn hero-btn-primary">View Our Work</a>
+      <a href="#contact" class="hero-btn hero-btn-ghost">Enquire</a>
+    </div>
+  </div>
+  <p class="hero-caption" id="heroCaption">The Veil &mdash; Pretoria, 2025</p>
+  <div class="scroll-ind"><div class="scroll-line"></div></div>
+  <div class="letterbox letterbox-top" aria-hidden="true"></div>
+  <div class="letterbox letterbox-bottom" aria-hidden="true"></div>
 </section>
 
 <section class="manifesto" aria-label="Our philosophy">
@@ -1450,9 +1481,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
   /* Initial states — set while opaque loader covers the stage */
   gsap.set('nav', {autoAlpha:0, y:-16});
-  gsap.set('.hero-mask', {clipPath:'inset(100% 0 0 0)'});
-  gsap.set('.hero-mask img', {scale:1.16});
-  gsap.set('.hero-frame', {autoAlpha:0, x:-12, y:-12});
+  gsap.set('.hero-media', {autoAlpha:0});
+  gsap.set('.hero-mask img', {scale:1.08});
   gsap.set('.hl-line > span', {yPercent:115});
   gsap.set('.hero .hero-eyebrow, .hero .hero-sub', {autoAlpha:0, y:16});
   gsap.set('.hero-cta .hero-btn', {autoAlpha:0, y:20});
@@ -1485,22 +1515,92 @@ document.addEventListener('DOMContentLoaded', function(){
     window.__srEntered = true;
     try { sessionStorage.setItem('sr_seen','1'); } catch(e){}
     var tl = gsap.timeline({
-      onComplete: function(){ if(loader) loader.style.display='none'; if(hasST) ScrollTrigger.refresh(); startHeroLoop(); }
+      onComplete: function(){ if(loader) loader.style.display='none'; if(hasST) ScrollTrigger.refresh(); }
     });
-    tl.to(loader, {yPercent:-100, duration:1.1, ease:IO})
-      .to('.hero-mask', {clipPath:'inset(0% 0 0 0)', duration:1.5, ease:EXPO}, '-=.55')
-      .to('.hero-mask img', {scale:1, duration:2.1, ease:EXPO}, '<')
-      .to('.hero-frame', {autoAlpha:1, x:0, y:0, duration:1.3, ease:EXPO}, '-=1.4')
-      .to('.hl-line > span', {yPercent:0, duration:1.2, stagger:.11, ease:EXPO}, '-=1.35')
-      .to('.hero .hero-eyebrow', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=1.15')
-      .to('.hero .hero-sub', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=.95')
-      .to('.hero-cta .hero-btn', {autoAlpha:1, y:0, duration:.9, stagger:.09, ease:EXPO}, '-=.8')
-      .to('nav', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=.85')
+    /* One slow, patient dissolve: the loader fades away as the film fades in beneath it —
+       the video itself starts blending in at the same moment, not after, so the motion
+       is continuous rather than a static image settling and then separately coming alive. */
+    tl.call(function(){ initHeroVideo(); startHeroLoop(); })
+      .to(loader, {autoAlpha:0, duration:2.2, ease:'sine.inOut'}, '<')
+      .to('.hero-media', {autoAlpha:1, duration:2.4, ease:'sine.inOut'}, '<')
+      .to('.hero-mask img', {scale:1, duration:3.2, ease:'sine.out'}, '<')
+      .to('.hl-line > span', {yPercent:0, duration:1.3, stagger:.12, ease:EXPO}, '-=1.6')
+      .to('.hero .hero-eyebrow', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=1.1')
+      .to('.hero .hero-sub', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=.9')
+      .to('.hero-cta .hero-btn', {autoAlpha:1, y:0, duration:.9, stagger:.09, ease:EXPO}, '-=.75')
+      .to('nav', {autoAlpha:1, y:0, duration:.9, ease:EXPO}, '-=.8')
       .to('.hero-caption, .hero .scroll-ind', {autoAlpha:1, duration:1.1}, '-=.6');
   });
 
 
-  /* Hero loop — slow Ken Burns crossfade through real client photography */
+  /* Hero video — takes over the frame once a real clip exists at images/hero-loop.mp4.
+     Until then this silently no-ops (404/empty src) and the photo loop below runs untouched. */
+  var heroLoopActive = true;
+  function initHeroVideo(){
+    var video = document.getElementById('heroVideo');
+    var videoB = document.getElementById('heroVideoB');
+    if(!video) return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ video.remove(); if(videoB) videoB.remove(); return; }
+    /* video starts loading immediately on page parse, so its error may already have
+       fired before this function runs — check current state, not just future events */
+    if(video.error || video.networkState === 3){ video.remove(); if(videoB) videoB.remove(); return; }
+
+    var activated = false;
+    function activateVideo(){
+      if(activated) return;
+      activated = true;
+      heroLoopActive = false;
+      gsap.to(video, {opacity:1, duration:2.6, ease:'sine.inOut'});
+      var cap = video.getAttribute('data-caption');
+      var captionEl = document.getElementById('heroCaption');
+      if(captionEl && cap){
+        gsap.to(captionEl, {opacity:0, duration:.4, onComplete:function(){
+          captionEl.innerHTML = cap;
+          gsap.to(captionEl, {opacity:1, duration:.6});
+        }});
+      }
+      gsap.to('.hero-loop-img', {opacity:0, duration:1, ease:'power1.inOut'});
+      if(videoB) startVideoCrossfadeLoop(video, videoB);
+    }
+    video.addEventListener('loadeddata', activateVideo);
+    video.addEventListener('error', function(){ video.remove(); if(videoB) videoB.remove(); });
+    if(video.readyState >= 2) activateVideo();
+  }
+
+  /* Seamless loop: two synced video elements dissolve into each other at the seam,
+     so restarting the clip never shows a hard cut or a fade-to-black flash. */
+  function startVideoCrossfadeLoop(vA, vB){
+    var XFADE = 0.5;
+    var active = vA, standby = vB;
+    gsap.set(standby, {opacity:0});
+    standby.pause();
+    try { standby.currentTime = 0; } catch(e){}
+
+    function arm(){
+      function onTimeUpdate(){
+        if(!active.duration || isNaN(active.duration)) return;
+        if(active.currentTime >= active.duration - XFADE){
+          active.removeEventListener('timeupdate', onTimeUpdate);
+          try { standby.currentTime = 0; } catch(e){}
+          var p = standby.play();
+          if(p && p.catch) p.catch(function(){});
+          gsap.to(standby, {opacity:1, duration:XFADE, ease:'sine.inOut'});
+          gsap.to(active, {opacity:0, duration:XFADE, ease:'sine.inOut', onComplete:function(){
+            active.pause();
+          }});
+          var prevActive = active, prevStandby = standby;
+          active = prevStandby;
+          standby = prevActive;
+          arm();
+        }
+      }
+      active.addEventListener('timeupdate', onTimeUpdate);
+    }
+    arm();
+  }
+
+  /* Hero photo loop — slow Ken Burns crossfade through real client photography.
+     Runs by default; auto-stops the moment initHeroVideo() activates a real video clip. */
   function startHeroLoop(){
     var slides = document.querySelectorAll('.hero-loop-img');
     if(slides.length < 2) return;
@@ -1510,6 +1610,7 @@ document.addEventListener('DOMContentLoaded', function(){
     gsap.set(slides, {scale:1});
 
     function advance(){
+      if(!heroLoopActive) return;
       var curr = slides[i];
       var ni = (i + 1) % slides.length;
       var next = slides[ni];
@@ -1518,6 +1619,7 @@ document.addEventListener('DOMContentLoaded', function(){
       gsap.to(curr, {scale:ZOOM, duration:HOLD + FADE, ease:'sine.out'});
 
       gsap.delayedCall(HOLD, function(){
+        if(!heroLoopActive) return;
         gsap.to(next, {opacity:1, duration:FADE, ease:'power1.inOut'});
         gsap.to(curr, {opacity:0, duration:FADE, ease:'power1.inOut', onComplete:function(){
           i = ni;
@@ -1537,8 +1639,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
   /* Act III — scroll storytelling */
   if(hasST){
-    gsap.to('.hero-art', {y:-44, ease:'none',
+    gsap.to('.hero-media', {y:80, ease:'none',
       scrollTrigger:{trigger:'.hero', start:'top top', end:'bottom top', scrub:true}});
+    gsap.to('.hero-content', {y:-30, autoAlpha:.4, ease:'none',
+      scrollTrigger:{trigger:'.hero', start:'top top', end:'70% top', scrub:true}});
 
     gsap.fromTo('.mani-big .w', {opacity:.12}, {opacity:1, stagger:.06, ease:'none',
       scrollTrigger:{trigger:'.manifesto', start:'top 78%', end:'top 30%', scrub:true}});
