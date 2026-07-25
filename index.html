@@ -1611,9 +1611,15 @@ document.addEventListener('DOMContentLoaded', function(){
         }});
       }
       gsap.to('.hero-loop-img', {opacity:0, duration:1, ease:'power1.inOut'});
-      /* Pull the second copy only now, so the initial load never fetches the film twice. */
+      /* Pull the second copy only now, so the initial load never fetches the film twice.
+         It ships with preload="none", under which assigning src alone never starts a
+         fetch — readyState would sit at 0 and the seam crossfade could never arm. */
       if(videoB){
-        if(!videoB.src) videoB.src = window.__srHeroSrc || video.currentSrc || video.src;
+        if(!videoB.src){
+          videoB.preload = 'auto';
+          videoB.src = window.__srHeroSrc || video.currentSrc || video.src;
+          videoB.load();
+        }
         startVideoCrossfadeLoop(video, videoB);
       }
     }
