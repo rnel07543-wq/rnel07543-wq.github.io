@@ -704,8 +704,23 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 <section class="hero" id="top">
   <div class="hero-media">
     <div class="hero-mask" id="heroLoop">
-      <video id="heroVideo" src="images/hero-loop.mp4?v=2" poster="images/hero-poster.webp" data-caption="Our Story &mdash; Pretoria, 2025" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
-      <video id="heroVideoB" src="images/hero-loop.mp4?v=2" muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="heroVideo" poster="images/hero-poster.webp" data-caption="Our Story &mdash; Pretoria, 2025" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="heroVideoB" muted playsinline preload="none" aria-hidden="true"></video>
+      <script>
+      /* Choose the encode before loading begins. The 1080p master is 12 MB at 9 Mbps —
+         it cannot arrive over cellular in time for the entry, which left phones staring
+         at a still poster while the film popped in seconds later. Phones get a 2 MB 720p
+         cut. The second element stays unloaded until the first is playing, so we never
+         pull two copies of the film at once. */
+      (function(){
+        var src = window.matchMedia('(max-width: 900px)').matches
+          ? 'images/hero-loop-mobile.mp4?v=1'
+          : 'images/hero-loop.mp4?v=2';
+        window.__srHeroSrc = src;
+        var a = document.getElementById('heroVideo');
+        if(a) a.src = src;
+      })();
+      </script>
       <img class="hero-loop-img" src="images/hero-poster.webp" alt="Wedding bouquet detail — SkyRidge Collective wedding photography, Pretoria" width="1920" height="1080" fetchpriority="high" data-caption="The Details &mdash; Pretoria, 2025">
       <img class="hero-loop-img" src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss beneath the veil — SkyRidge Collective wedding photography, Pretoria" width="1114" height="1412" data-caption="First Kiss &mdash; Pretoria, 2025">
       <img class="hero-loop-img" src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil — SkyRidge Collective wedding photography, Pretoria" width="1110" height="1417" data-caption="Bridal Portrait &mdash; Pretoria, 2025">
@@ -1499,6 +1514,20 @@ document.addEventListener('DOMContentLoaded', function(){
   var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
   var minTime = new Promise(function(r){ setTimeout(r, seen ? 450 : 1900); });
 
+  /* Hold the loader until the film can actually play, so it is already running as the
+     dissolve begins. Without this the entry finished on a static frame and the video
+     appeared seconds later — fine on desktop, obvious on a phone. Capped, so a slow
+     connection delays the entry a little rather than stalling it. */
+  var heroVid = document.getElementById('heroVideo');
+  var videoReady = (!heroVid || heroVid.readyState >= 3) ? Promise.resolve()
+    : new Promise(function(r){
+        var settled = false;
+        function done(){ if(settled) return; settled = true; r(); }
+        heroVid.addEventListener('canplay', done);
+        heroVid.addEventListener('error', done);
+        setTimeout(done, seen ? 1000 : 2400);
+      });
+
   /* Act I — brand introduction */
   var intro = gsap.timeline();
   if(!seen){
@@ -1512,7 +1541,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   /* Act II — the unveiling */
-  Promise.all([imgReady, fontsReady, minTime]).then(function(){
+  Promise.all([imgReady, fontsReady, minTime, videoReady]).then(function(){
     window.__srEntered = true;
     try { sessionStorage.setItem('sr_seen','1'); } catch(e){}
     var tl = gsap.timeline({
@@ -1547,9 +1576,30 @@ document.addEventListener('DOMContentLoaded', function(){
     if(video.error || video.networkState === 3){ video.remove(); if(videoB) videoB.remove(); return; }
 
     var activated = false;
+    /* Only hand the frame over once playback has genuinely started. iOS refuses autoplay
+       in Low Power Mode, and revealing the video on that refusal would fade the photo
+       loop out to a frozen frame. On refusal we keep the photos and retry on first tap. */
     function activateVideo(){
       if(activated) return;
       activated = true;
+      var p = video.play();
+      if(p && p.then) p.then(revealVideo).catch(function(){ activated = false; armRetry(); });
+      else revealVideo();
+    }
+
+    var retryArmed = false;
+    function armRetry(){
+      if(retryArmed) return;
+      retryArmed = true;
+      ['touchend','click'].forEach(function(evt){
+        document.addEventListener(evt, function once(){
+          document.removeEventListener(evt, once);
+          activateVideo();
+        }, {once:true, passive:true});
+      });
+    }
+
+    function revealVideo(){
       heroLoopActive = false;
       gsap.to(video, {opacity:1, duration:2.6, ease:'sine.inOut'});
       var cap = video.getAttribute('data-caption');
@@ -1561,8 +1611,13 @@ document.addEventListener('DOMContentLoaded', function(){
         }});
       }
       gsap.to('.hero-loop-img', {opacity:0, duration:1, ease:'power1.inOut'});
-      if(videoB) startVideoCrossfadeLoop(video, videoB);
+      /* Pull the second copy only now, so the initial load never fetches the film twice. */
+      if(videoB){
+        if(!videoB.src) videoB.src = window.__srHeroSrc || video.currentSrc || video.src;
+        startVideoCrossfadeLoop(video, videoB);
+      }
     }
+
     video.addEventListener('loadeddata', activateVideo);
     video.addEventListener('error', function(){ video.remove(); if(videoB) videoB.remove(); });
     if(video.readyState >= 2) activateVideo();
@@ -1580,22 +1635,37 @@ document.addEventListener('DOMContentLoaded', function(){
     function arm(){
       function onTimeUpdate(){
         if(!active.duration || isNaN(active.duration)) return;
-        if(active.currentTime >= active.duration - XFADE){
-          active.removeEventListener('timeupdate', onTimeUpdate);
-          try { standby.currentTime = 0; } catch(e){}
-          var p = standby.play();
-          if(p && p.catch) p.catch(function(){});
-          gsap.to(standby, {opacity:1, duration:XFADE, ease:'sine.inOut'});
-          gsap.to(active, {opacity:0, duration:XFADE, ease:'sine.inOut', onComplete:function(){
-            active.pause();
-          }});
-          var prevActive = active, prevStandby = standby;
-          active = prevStandby;
-          standby = prevActive;
-          arm();
-        }
+        if(active.currentTime < active.duration - XFADE) return;
+        /* The standby copy may not have buffered yet — it loads lazily, and iOS often
+           downgrades preload to save data. Keep waiting rather than cutting to a blank
+           frame; the `ended` handler below covers us if it never arrives in time. */
+        if(standby.readyState < 3) return;
+        active.removeEventListener('timeupdate', onTimeUpdate);
+        active.removeEventListener('ended', onEnded);
+        try { standby.currentTime = 0; } catch(e){}
+        var p = standby.play();
+        if(p && p.catch) p.catch(function(){});
+        gsap.to(standby, {opacity:1, duration:XFADE, ease:'sine.inOut'});
+        gsap.to(active, {opacity:0, duration:XFADE, ease:'sine.inOut', onComplete:function(){
+          active.pause();
+        }});
+        var prevActive = active, prevStandby = standby;
+        active = prevStandby;
+        standby = prevActive;
+        arm();
+      }
+      /* Fallback: if we reached the end without a ready standby, restart this copy so the
+         hero keeps moving instead of freezing on the last frame. */
+      function onEnded(){
+        active.removeEventListener('timeupdate', onTimeUpdate);
+        active.removeEventListener('ended', onEnded);
+        try { active.currentTime = 0; } catch(e){}
+        var p = active.play();
+        if(p && p.catch) p.catch(function(){});
+        arm();
       }
       active.addEventListener('timeupdate', onTimeUpdate);
+      active.addEventListener('ended', onEnded);
     }
     arm();
   }
