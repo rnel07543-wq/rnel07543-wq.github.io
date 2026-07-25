@@ -1545,7 +1545,15 @@ document.addEventListener('DOMContentLoaded', function(){
     window.__srEntered = true;
     try { sessionStorage.setItem('sr_seen','1'); } catch(e){}
     var tl = gsap.timeline({
-      onComplete: function(){ if(loader) loader.style.display='none'; if(hasST) ScrollTrigger.refresh(); }
+      onComplete: function(){
+        if(loader) loader.style.display='none';
+        /* Drop the identity transform GSAP leaves on the nav. Any transform other than
+           none makes an element a containing block for fixed-position descendants, which
+           collapsed the mobile menu (position:fixed; inset:0) down to the nav's own 60px
+           box instead of covering the screen. */
+        gsap.set('nav', {clearProps:'transform,translate,rotate,scale'});
+        if(hasST) ScrollTrigger.refresh();
+      }
     });
     /* One slow, patient dissolve: the loader fades away as the film fades in beneath it —
        the video itself starts blending in at the same moment, not after, so the motion
