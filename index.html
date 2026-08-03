@@ -708,7 +708,6 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
   <div class="hero-media">
     <div class="hero-mask" id="heroLoop">
       <video id="heroVideo" poster="images/hero-poster.webp" data-caption="Our Story &mdash; Pretoria, 2025" autoplay loop muted playsinline preload="auto" aria-hidden="true"></video>
-      <video id="heroVideoB" loop muted playsinline preload="none" aria-hidden="true"></video>
       <script>
       /* Choose the encode before loading begins. The 1080p master is 12 MB at 9 Mbps —
          it cannot arrive over cellular in time for the entry, which left phones staring
@@ -1607,12 +1606,11 @@ document.addEventListener('DOMContentLoaded', function(){
   var heroLoopActive = true;
   function initHeroVideo(){
     var video = document.getElementById('heroVideo');
-    var videoB = document.getElementById('heroVideoB');
     if(!video) return;
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ video.remove(); if(videoB) videoB.remove(); return; }
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ video.remove(); return; }
     /* video starts loading immediately on page parse, so its error may already have
        fired before this function runs — check current state, not just future events */
-    if(video.error || video.networkState === 3){ video.remove(); if(videoB) videoB.remove(); return; }
+    if(video.error || video.networkState === 3){ video.remove(); return; }
 
     var activated = false;
     /* Only hand the frame over once playback has genuinely started. iOS refuses autoplay
@@ -1650,67 +1648,11 @@ document.addEventListener('DOMContentLoaded', function(){
         });
       }
       fxTo('.hero-loop-img', 0, 1);
-      /* Pull the second copy only now, so the initial load never fetches the film twice.
-         It ships with preload="none", under which assigning src alone never starts a
-         fetch — readyState would sit at 0 and the seam crossfade could never arm. */
-      if(videoB){
-        if(!videoB.src){
-          videoB.preload = 'auto';
-          videoB.src = window.__srHeroSrc || video.currentSrc || video.src;
-          videoB.load();
-        }
-        startVideoCrossfadeLoop(video, videoB);
-      }
     }
 
     video.addEventListener('loadeddata', activateVideo);
-    video.addEventListener('error', function(){ video.remove(); if(videoB) videoB.remove(); });
+    video.addEventListener('error', function(){ video.remove(); });
     if(video.readyState >= 2) activateVideo();
-  }
-
-  /* Seamless loop: two synced video elements dissolve into each other at the seam,
-     so restarting the clip never shows a hard cut or a fade-to-black flash. */
-  function startVideoCrossfadeLoop(vA, vB){
-    var XFADE = 0.5;
-    var active = vA, standby = vB;
-    fxSet(standby, 0);
-    standby.pause();
-    try { standby.currentTime = 0; } catch(e){}
-
-    function arm(){
-      function onTimeUpdate(){
-        if(!active.duration || isNaN(active.duration)) return;
-        if(active.currentTime < active.duration - XFADE) return;
-        /* The standby copy may not have buffered yet — it loads lazily, and iOS often
-           downgrades preload to save data. Keep waiting rather than cutting to a blank
-           frame; the `ended` handler below covers us if it never arrives in time. */
-        if(standby.readyState < 3) return;
-        active.removeEventListener('timeupdate', onTimeUpdate);
-        active.removeEventListener('ended', onEnded);
-        try { standby.currentTime = 0; } catch(e){}
-        var p = standby.play();
-        if(p && p.catch) p.catch(function(){});
-        fxTo(standby, 1, XFADE);
-        fxTo(active, 0, XFADE, function(){ active.pause(); });
-        var prevActive = active, prevStandby = standby;
-        active = prevStandby;
-        standby = prevActive;
-        arm();
-      }
-      /* Fallback: if we reached the end without a ready standby, restart this copy so the
-         hero keeps moving instead of freezing on the last frame. */
-      function onEnded(){
-        active.removeEventListener('timeupdate', onTimeUpdate);
-        active.removeEventListener('ended', onEnded);
-        try { active.currentTime = 0; } catch(e){}
-        var p = active.play();
-        if(p && p.catch) p.catch(function(){});
-        arm();
-      }
-      active.addEventListener('timeupdate', onTimeUpdate);
-      active.addEventListener('ended', onEnded);
-    }
-    arm();
   }
 
   /* Hero photo loop — slow Ken Burns crossfade through real client photography.
