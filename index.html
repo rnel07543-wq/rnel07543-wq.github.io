@@ -456,7 +456,10 @@ a:focus-visible,button:focus-visible,.gcell:focus-visible,.eq-opt:focus-visible,
 .ld-line i{display:block;width:100%;height:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;}
 .ld-presents{font-family:'Cinzel',serif;font-size:.46rem;letter-spacing:.75em;text-transform:uppercase;color:rgba(107,95,80,.55);padding-left:.75em;}
 .no-fx #sr-loader{display:none!important;}
-html.no-fx .hero *,html.no-fx nav{opacity:1!important;transform:none!important;visibility:visible!important;}
+/* Excludes .hero-mask media: the showreel keeps its own opacity choreography (plain
+   CSS-transition fallback when gsap is unavailable) so a missing animation library
+   can't force both crossfade layers to opacity:1 at once and freeze the loop. */
+html.no-fx .hero *:not(.hero-mask img):not(.hero-mask video),html.no-fx nav{opacity:1!important;transform:none!important;visibility:visible!important;}
 html.no-fx .letterbox{height:0!important;}
 
 /* Cinematic hero */
@@ -554,9 +557,9 @@ html.no-fx .letterbox{height:0!important;}
 .hero-mask img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;}
 .hero-mask img:first-of-type{opacity:1;}
 .hero-mask video{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:cover;display:block;opacity:0;pointer-events:none;}
-html.no-fx .hero-loop-img{opacity:0!important;}
-html.no-fx .hero-loop-img:first-of-type{opacity:1!important;}
-html.no-fx .hero-mask video{display:none!important;}
+/* No no-fx overrides here on purpose: initHeroVideo()/startHeroLoop() manage this
+   media's opacity themselves (with a plain CSS-transition fallback when gsap is
+   unavailable) regardless of no-fx state, so the showreel still plays either way. */
 .hero-caption{position:static;margin-top:1.1rem;text-align:right;color:rgba(107,95,80,.6);}
 .hero .scroll-ind{opacity:.45;}
 .hero .scroll-ind span{color:var(--mist);}
@@ -704,8 +707,8 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 <section class="hero" id="top">
   <div class="hero-media">
     <div class="hero-mask" id="heroLoop">
-      <video id="heroVideo" poster="images/hero-poster.webp" data-caption="Our Story &mdash; Pretoria, 2025" autoplay muted playsinline preload="auto" aria-hidden="true"></video>
-      <video id="heroVideoB" muted playsinline preload="none" aria-hidden="true"></video>
+      <video id="heroVideo" poster="images/hero-poster.webp" data-caption="Our Story &mdash; Pretoria, 2025" autoplay loop muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="heroVideoB" loop muted playsinline preload="none" aria-hidden="true"></video>
       <script>
       /* Choose the encode before loading begins. The 1080p master is 12 MB at 9 Mbps —
          it cannot arrive over cellular in time for the entry, which left phones staring
@@ -1486,6 +1489,33 @@ document.addEventListener('DOMContentLoaded', function(){
     docEl.classList.add('no-fx');
     window.__srEntered = true;
   }
+
+  /* gsap-optional fades: used by the showreel below so it keeps playing even if the
+     CDN script fails (blocked, offline, slow carrier network) — a missing animation
+     library must not orphan the video on a single static frame. */
+  function fxTo(target, opacity, dur, onDone){
+    if(window.gsap){ gsap.to(target, {opacity:opacity, duration:dur, ease:'sine.inOut', onComplete:onDone}); return; }
+    var els = typeof target==='string' ? document.querySelectorAll(target) : (target.nodeType ? [target] : target);
+    Array.prototype.forEach.call(els, function(e){ e.style.transition='opacity '+dur+'s ease'; e.style.opacity=opacity; });
+    if(onDone) setTimeout(onDone, dur*1000);
+  }
+  function fxSet(target, opacity){
+    if(window.gsap){ gsap.set(target, {opacity:opacity}); return; }
+    var els = typeof target==='string' ? document.querySelectorAll(target) : (target.nodeType ? [target] : target);
+    Array.prototype.forEach.call(els, function(e){ e.style.opacity=opacity; });
+  }
+  function fxDelay(sec, fn){
+    if(window.gsap){ gsap.delayedCall(sec, fn); return; }
+    setTimeout(fn, sec*1000);
+  }
+
+  /* The showreel is the product, not decoration — start it unconditionally, before the
+     gsap/reduced-motion gate below. initHeroVideo() and startHeroLoop() keep their own
+     reduced-motion checks, so that preference is still respected; what they no longer
+     depend on is the animation library loading successfully. */
+  initHeroVideo();
+  startHeroLoop();
+
   if(reduce || !window.gsap){ abort(); return; }
 
   var hasST = false;
@@ -1555,11 +1585,12 @@ document.addEventListener('DOMContentLoaded', function(){
         if(hasST) ScrollTrigger.refresh();
       }
     });
-    /* One slow, patient dissolve: the loader fades away as the film fades in beneath it —
-       the video itself starts blending in at the same moment, not after, so the motion
-       is continuous rather than a static image settling and then separately coming alive. */
-    tl.call(function(){ initHeroVideo(); startHeroLoop(); })
-      .to(loader, {autoAlpha:0, duration:2.2, ease:'sine.inOut'}, '<')
+    /* One slow, patient dissolve: the loader fades away as the film fades in beneath it.
+       initHeroVideo()/startHeroLoop() already started above (unconditionally, ahead of
+       this gsap-gated block) — the video itself began blending in at that same moment,
+       not after, so the motion reads as continuous rather than a static image settling
+       and then separately coming alive. */
+    tl.to(loader, {autoAlpha:0, duration:2.2, ease:'sine.inOut'})
       .to('.hero-media', {autoAlpha:1, duration:2.4, ease:'sine.inOut'}, '<')
       .to('.hero-mask img', {scale:1, duration:3.2, ease:'sine.out'}, '<')
       .to('.hl-line > span', {yPercent:0, duration:1.3, stagger:.12, ease:EXPO}, '-=1.6')
@@ -1609,16 +1640,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
     function revealVideo(){
       heroLoopActive = false;
-      gsap.to(video, {opacity:1, duration:2.6, ease:'sine.inOut'});
+      fxTo(video, 1, 2.6);
       var cap = video.getAttribute('data-caption');
       var captionEl = document.getElementById('heroCaption');
       if(captionEl && cap){
-        gsap.to(captionEl, {opacity:0, duration:.4, onComplete:function(){
+        fxTo(captionEl, 0, .4, function(){
           captionEl.innerHTML = cap;
-          gsap.to(captionEl, {opacity:1, duration:.6});
-        }});
+          fxTo(captionEl, 1, .6);
+        });
       }
-      gsap.to('.hero-loop-img', {opacity:0, duration:1, ease:'power1.inOut'});
+      fxTo('.hero-loop-img', 0, 1);
       /* Pull the second copy only now, so the initial load never fetches the film twice.
          It ships with preload="none", under which assigning src alone never starts a
          fetch — readyState would sit at 0 and the seam crossfade could never arm. */
@@ -1642,7 +1673,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function startVideoCrossfadeLoop(vA, vB){
     var XFADE = 0.5;
     var active = vA, standby = vB;
-    gsap.set(standby, {opacity:0});
+    fxSet(standby, 0);
     standby.pause();
     try { standby.currentTime = 0; } catch(e){}
 
@@ -1659,10 +1690,8 @@ document.addEventListener('DOMContentLoaded', function(){
         try { standby.currentTime = 0; } catch(e){}
         var p = standby.play();
         if(p && p.catch) p.catch(function(){});
-        gsap.to(standby, {opacity:1, duration:XFADE, ease:'sine.inOut'});
-        gsap.to(active, {opacity:0, duration:XFADE, ease:'sine.inOut', onComplete:function(){
-          active.pause();
-        }});
+        fxTo(standby, 1, XFADE);
+        fxTo(active, 0, XFADE, function(){ active.pause(); });
         var prevActive = active, prevStandby = standby;
         active = prevStandby;
         standby = prevActive;
@@ -1687,12 +1716,16 @@ document.addEventListener('DOMContentLoaded', function(){
   /* Hero photo loop — slow Ken Burns crossfade through real client photography.
      Runs by default; auto-stops the moment initHeroVideo() activates a real video clip. */
   function startHeroLoop(){
+    /* Mirrors initHeroVideo()'s own check: this now starts unconditionally (ahead of
+       the gsap/reduced-motion gate above), so it needs to respect the preference itself
+       instead of relying on a caller that no longer gates it. */
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var slides = document.querySelectorAll('.hero-loop-img');
     if(slides.length < 2) return;
     var captionEl = document.getElementById('heroCaption');
     var HOLD = 5.2, FADE = 1.3, ZOOM = 1.08;
     var i = 0;
-    gsap.set(slides, {scale:1});
+    if(window.gsap) gsap.set(slides, {scale:1});
 
     function advance(){
       if(!heroLoopActive) return;
@@ -1700,22 +1733,26 @@ document.addEventListener('DOMContentLoaded', function(){
       var ni = (i + 1) % slides.length;
       var next = slides[ni];
 
-      gsap.set(next, {scale:1});
-      gsap.to(curr, {scale:ZOOM, duration:HOLD + FADE, ease:'sine.out'});
+      /* Ken Burns zoom is decorative polish, gsap-only — the fallback path below still
+         crossfades on time without it rather than skipping the loop entirely. */
+      if(window.gsap){
+        gsap.set(next, {scale:1});
+        gsap.to(curr, {scale:ZOOM, duration:HOLD + FADE, ease:'sine.out'});
+      }
 
-      gsap.delayedCall(HOLD, function(){
+      fxDelay(HOLD, function(){
         if(!heroLoopActive) return;
-        gsap.to(next, {opacity:1, duration:FADE, ease:'power1.inOut'});
-        gsap.to(curr, {opacity:0, duration:FADE, ease:'power1.inOut', onComplete:function(){
+        fxTo(next, 1, FADE);
+        fxTo(curr, 0, FADE, function(){
           i = ni;
           advance();
-        }});
+        });
         var cap = next.getAttribute('data-caption');
         if(captionEl && cap){
-          gsap.to(captionEl, {opacity:0, duration:.4, onComplete:function(){
+          fxTo(captionEl, 0, .4, function(){
             captionEl.innerHTML = cap;
-            gsap.to(captionEl, {opacity:1, duration:.6});
-          }});
+            fxTo(captionEl, 1, .6);
+          });
         }
       });
     }
