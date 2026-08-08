@@ -655,10 +655,10 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 (function(){
   var END = Date.parse('2026-08-31T22:00:00Z'); /* 00:00, 1 Sep 2026 SAST (UTC+2) */
   window.closePromo = function(){
-    try{ localStorage.setItem('srPromoDismissed','1'); }catch(e){}
+    try{ sessionStorage.setItem('srPromoDismissed','1'); }catch(e){}
     document.documentElement.classList.remove('has-promo');
   };
-  var dismissed=false; try{ dismissed = localStorage.getItem('srPromoDismissed')==='1'; }catch(e){}
+  var dismissed=false; try{ dismissed = sessionStorage.getItem('srPromoDismissed')==='1'; }catch(e){}
   if(dismissed || Date.now() >= END) return;              /* expired or dismissed → never shows */
   document.documentElement.classList.add('has-promo');
   function sync(){ var b=document.getElementById('promoBar'); if(b) document.documentElement.style.setProperty('--promo-h', b.offsetHeight+'px'); }
