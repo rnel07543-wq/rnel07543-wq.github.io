@@ -383,11 +383,22 @@ footer{border-top:1px solid rgba(196,160,90,.08);padding:3.5rem 5rem;display:gri
     grid-column:span 2;grid-row:span 1;
   }
 
-  /* TESTIMONIALS */
+  /* TESTIMONIALS — horizontal swipe carousel, no JS: each card is a fixed-height
+     snap point with its own inner scroll, so the page's vertical scroll doesn't
+     have to absorb two full long-form reviews stacked one after another. */
   .testimonials{padding-top:4rem;padding-bottom:4rem;}
   .testimonials .sec-label{margin-bottom:2.2rem;}
-  .tmn-grid{grid-template-columns:1fr;gap:2rem;}
-  .tmn-card{padding:2rem 1.6rem;}
+  .tmn-grid{
+    display:flex;grid-template-columns:none;
+    overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    gap:1rem;margin:0 -1.4rem;padding:0 1.4rem 1.2rem;
+    scrollbar-width:none;max-width:none;
+  }
+  .tmn-grid::-webkit-scrollbar{display:none;}
+  .tmn-card{
+    flex:0 0 86vw;scroll-snap-align:center;
+    max-height:58vh;overflow-y:auto;padding:2rem 1.6rem;
+  }
 
   /* COLLECTIONS */
   .col-intro{grid-template-columns:1fr;gap:1.8rem;margin-bottom:2.5rem;}
