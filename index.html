@@ -753,8 +753,8 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
          pull two copies of the film at once. */
       (function(){
         var src = window.matchMedia('(max-width: 900px)').matches
-          ? 'images/hero-loop-mobile.mp4?v=3'
-          : 'images/hero-loop.mp4?v=3';
+          ? 'images/hero-loop-mobile.mp4?v=4'
+          : 'images/hero-loop.mp4?v=4';
         window.__srHeroSrc = src;
         var a = document.getElementById('heroVideo');
         if(a) a.src = src;
@@ -1572,6 +1572,23 @@ document.addEventListener('DOMContentLoaded', function(){
     setTimeout(fn, sec*1000);
   }
 
+  /* Playing the video and revealing it are kept as two separate steps: play() is called
+     as early as possible (inside initHeroVideo() below) so the film is already decoded
+     and running by the time anyone can see it, but the opacity fade that actually shows
+     it is held back and fired in lockstep with the loader's own fade in Act II — otherwise
+     the video could pop in seconds before or after the loader clears, instead of the two
+     dissolving together as one continuous reveal. These must exist before initHeroVideo()
+     runs, since its synchronous early-return paths (no video element, reduced motion, a
+     load error) call videoPlayingResolve() immediately. */
+  var heroLoopActive = true;
+  var doRevealVideo = null;
+  var entryStarted = false;
+  var videoPlayingResolve, videoPlayingSettled = false;
+  var videoPlaying = new Promise(function(r){
+    videoPlayingResolve = function(){ if(videoPlayingSettled) return; videoPlayingSettled = true; r(); };
+  });
+  setTimeout(videoPlayingResolve, 2500);
+
   /* The showreel is the product, not decoration — start it unconditionally, before the
      gsap/reduced-motion gate below. initHeroVideo() and startHeroLoop() keep their own
      reduced-motion checks, so that preference is still respected; what they no longer
@@ -1634,8 +1651,9 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   /* Act II — the unveiling */
-  Promise.all([imgReady, fontsReady, minTime, videoReady]).then(function(){
+  Promise.all([imgReady, fontsReady, minTime, videoReady, videoPlaying]).then(function(){
     window.__srEntered = true;
+    entryStarted = true;
     try { sessionStorage.setItem('sr_seen','1'); } catch(e){}
     var tl = gsap.timeline({
       onComplete: function(){
@@ -1649,10 +1667,10 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     });
     /* One slow, patient dissolve: the loader fades away as the film fades in beneath it.
-       initHeroVideo()/startHeroLoop() already started above (unconditionally, ahead of
-       this gsap-gated block) — the video itself began blending in at that same moment,
-       not after, so the motion reads as continuous rather than a static image settling
-       and then separately coming alive. */
+       doRevealVideo() fires here, at the exact instant the loader starts its own fade, so
+       the video's own opacity tween and the loader's dissolve always run together — not
+       whenever playback happened to become ready, which could land seconds either side. */
+    if(doRevealVideo) doRevealVideo();
     tl.to(loader, {autoAlpha:0, duration:2.2, ease:'sine.inOut'})
       .to('.hero-media', {autoAlpha:1, duration:2.4, ease:'sine.inOut'}, '<')
       .to('.hero-mask img', {scale:1, duration:3.2, ease:'sine.out'}, '<')
@@ -1664,17 +1682,15 @@ document.addEventListener('DOMContentLoaded', function(){
       .to('.hero-caption, .hero .scroll-ind', {autoAlpha:1, duration:1.1}, '-=.6');
   });
 
-
   /* Hero video — takes over the frame once a real clip exists at images/hero-loop.mp4.
      Until then this silently no-ops (404/empty src) and the photo loop below runs untouched. */
-  var heroLoopActive = true;
   function initHeroVideo(){
     var video = document.getElementById('heroVideo');
-    if(!video) return;
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ video.remove(); return; }
+    if(!video){ videoPlayingResolve(); return; }
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ video.remove(); videoPlayingResolve(); return; }
     /* video starts loading immediately on page parse, so its error may already have
        fired before this function runs — check current state, not just future events */
-    if(video.error || video.networkState === 3){ video.remove(); return; }
+    if(video.error || video.networkState === 3){ video.remove(); videoPlayingResolve(); return; }
 
     var activated = false;
     /* Only hand the frame over once playback has genuinely started. iOS refuses autoplay
@@ -1684,8 +1700,8 @@ document.addEventListener('DOMContentLoaded', function(){
       if(activated) return;
       activated = true;
       var p = video.play();
-      if(p && p.then) p.then(revealVideo).catch(function(){ activated = false; armRetry(); });
-      else revealVideo();
+      if(p && p.then) p.then(onPlaying).catch(function(){ activated = false; armRetry(); });
+      else onPlaying();
     }
 
     var retryArmed = false;
@@ -1700,22 +1716,28 @@ document.addEventListener('DOMContentLoaded', function(){
       });
     }
 
-    function revealVideo(){
-      heroLoopActive = false;
-      fxTo(video, 1, 2.6);
-      var cap = video.getAttribute('data-caption');
-      var captionEl = document.getElementById('heroCaption');
-      if(captionEl && cap){
-        fxTo(captionEl, 0, .4, function(){
-          captionEl.innerHTML = cap;
-          fxTo(captionEl, 1, .6);
-        });
-      }
-      fxTo('.hero-loop-img', 0, 1);
+    function onPlaying(){
+      doRevealVideo = function(){
+        heroLoopActive = false;
+        fxTo(video, 1, 2.6);
+        var cap = video.getAttribute('data-caption');
+        var captionEl = document.getElementById('heroCaption');
+        if(captionEl && cap){
+          fxTo(captionEl, 0, .4, function(){
+            captionEl.innerHTML = cap;
+            fxTo(captionEl, 1, .6);
+          });
+        }
+        fxTo('.hero-loop-img', 0, 1);
+      };
+      videoPlayingResolve();
+      /* Entry already ran without us (a slow connection outlasted the 2.5s cap) — reveal
+         the moment we're actually ready rather than leaving the photo loop running forever. */
+      if(entryStarted) doRevealVideo();
     }
 
     video.addEventListener('loadeddata', activateVideo);
-    video.addEventListener('error', function(){ video.remove(); });
+    video.addEventListener('error', function(){ video.remove(); videoPlayingResolve(); });
     if(video.readyState >= 2) activateVideo();
   }
 
