@@ -154,7 +154,8 @@ section{padding:6rem 5rem;}
 .gallery .sec-label{margin-bottom:3.6rem;}
 .gallery-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:320px;gap:22px;max-width:1400px;margin:0 auto;}
 .gcell{position:relative;overflow:hidden;background:#f8f2e4;grid-column:span 2;}
-.gcell:nth-child(1){grid-column:span 6;}
+.gcell:nth-child(1),.gcell:nth-child(10){grid-column:span 6;}
+.gcell:nth-child(3){grid-row:span 2;}
 .gcell-inner{position:absolute;inset:0;transition:transform 1s cubic-bezier(.25,.46,.45,.94);}
 .gcell:hover .gcell-inner{transform:scale(1.045);}
 .gph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.8rem;font-style:italic;letter-spacing:.25em;color:rgba(196,160,90,.08);text-align:center;line-height:1.8;}
@@ -379,7 +380,11 @@ footer{border-top:1px solid rgba(196,160,90,.08);padding:3.5rem 5rem;display:gri
     gap:12px;
   }
   .gcell{grid-column:span 1;grid-row:span 1;}
-  .gcell:nth-child(1){
+  /* The tall B&W feature (span 2 rows on desktop) would strand an empty cell in this
+     2-column grid -- explicitly reset it here since its base-stylesheet rule has no
+     media query and would otherwise still win on specificity. */
+  .gcell:nth-child(3){grid-row:span 1;}
+  .gcell:nth-child(1),.gcell:nth-child(10){
     grid-column:span 2;grid-row:span 1;
   }
 
@@ -789,14 +794,14 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 <section class="gallery" id="gallery">
   <div class="sec-label"><h2>Selected Weddings</h2></div>
   <div class="gallery-grid">
+    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-2025.webp?v=2" alt="Bride and groom couple portrait at a Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Beneath the Veil &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-embrace-2025.webp?v=2" alt="Bride and groom embracing at golden hour in a forest, Pretoria wedding" width="1900" height="1267" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div><div class="gov"><span>Golden Hour &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil, Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Bridal Portrait &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-forest-2025.webp?v=2" alt="Bride and groom standing together in a forest at sunset, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Forest Light &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-candid-2025.webp?v=2" alt="Bride looking at the groom candidly over his shoulder, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>A Glance &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-groom-details-2025.webp?v=2" alt="Groom's wedding day details flat lay with shoes, belt and stationery, Pretoria" width="1135" height="1386" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div><div class="gov"><span>Groom Details &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-window-2025.webp?v=2" alt="Bride posing beside a glass doorway in a fitted white gown, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>The Doorway &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-closeup-2025.webp?v=2" alt="Close bridal portrait in soft evening light, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Evening Portrait &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-2025.webp?v=2" alt="Bride and groom couple portrait at a Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Couple &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-groom-details-2025.webp?v=2" alt="Groom's wedding day details flat lay with shoes, belt and stationery, Pretoria" width="1135" height="1386" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div><div class="gov"><span>Groom Details &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil, Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Bridal Portrait &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-2025.webp?v=2" alt="Bride holding her bouquet in an off-shoulder gown, Pretoria wedding" width="1108" height="1419" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;"></div><div class="gov"><span>Bridal &mdash; 2025</span></div></div>
     <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss in black and white, Pretoria wedding" width="1114" height="1412" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>First Kiss &mdash; 2025</span></div></div>
   </div>
