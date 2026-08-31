@@ -149,21 +149,61 @@ section{padding:6rem 5rem;}
 .sec-label::after{content:'';display:block;flex:1;height:1px;background:rgba(196,160,90,.12);}
 .sec-label span,.sec-label h2{font-family:'Cinzel',serif;font-size:.72rem;font-weight:400;letter-spacing:.55em;text-transform:uppercase;color:var(--gold);opacity:1;white-space:nowrap;}
 
-/* GALLERY */
+/* GALLERY — a fixed-height hero image per chapter, then a horizontal-scroll filmstrip
+   for the rest. Vertical footprint per chapter is now two fixed-height rows regardless
+   of photo count, instead of a masonry block that grew taller with every photo added --
+   the whole gallery is browsable without much scrolling; depth comes from swiping the
+   strips sideways instead of scrolling the page down through them. */
 .gallery{background:#ffffff;padding-top:6.5rem;padding-bottom:6.5rem;}
 .gallery .sec-label{margin-bottom:3.6rem;}
-.gallery-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:320px;gap:22px;max-width:1400px;margin:0 auto;}
-.gcell{position:relative;overflow:hidden;background:#f8f2e4;grid-column:span 2;}
-.gcell:nth-child(1),.gcell:nth-child(10){grid-column:span 6;}
-.gcell:nth-child(5){grid-row:span 2;}
-.gcell-inner{position:absolute;inset:0;transition:transform 1s cubic-bezier(.25,.46,.45,.94);}
-.gcell:hover .gcell-inner{transform:scale(1.045);}
+.gallery-chapter{max-width:1400px;margin:0 auto 1.4rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:1.2rem;color:var(--text);opacity:.75;}
+.gallery-strip{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  gap:12px;max-width:1400px;margin:0 auto 2.8rem;padding-bottom:.5rem;scrollbar-width:none;
+}
+.gallery-strip::-webkit-scrollbar{display:none;}
+.gcell{position:relative;overflow:hidden;background:#f8f2e4;flex:0 0 300px;height:440px;scroll-snap-align:start;cursor:pointer;}
+.gcell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1s cubic-bezier(.25,.46,.45,.94);}
+.gcell:hover img{transform:scale(1.045);}
+.gcell-feature{flex-basis:460px;}
 .gph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:.8rem;font-style:italic;letter-spacing:.25em;color:rgba(196,160,90,.08);text-align:center;line-height:1.8;}
 .gov{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,17,14,.62) 0%,rgba(20,17,14,0) 48%);opacity:0;transition:opacity .6s;display:flex;align-items:flex-end;padding:1.8rem 2rem;}
 .gcell:hover .gov{opacity:1;}
 .gov span{font-family:'Cinzel',serif;font-size:.66rem;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:#f3ece0;position:relative;padding-bottom:.6rem;}
 .gov span::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:22px;background:var(--gold);}
 .gov span{font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);}
+
+/* PORTRAITS & DETAILS — a deliberately different register from the couple chapters: a
+   tight, uniform, contact-sheet grid on a tinted band, for the solo portraits and detail
+   shots that don't belong in the couple-story flow but are too strong to cut. */
+.portraits{background:var(--bg2);margin:3.5rem 0;padding:3.4rem 1.4rem;}
+.portraits-label{text-align:center;font-family:'Cinzel',serif;font-size:.58rem;font-weight:400;letter-spacing:.4em;text-transform:uppercase;color:var(--gold-text);margin-bottom:1.8rem;}
+.portraits-grid{
+  display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  gap:3px;max-width:1400px;margin:0 auto;padding-bottom:.4rem;scrollbar-width:none;
+}
+.portraits-grid::-webkit-scrollbar{display:none;}
+.pcell{position:relative;overflow:hidden;background:#e9e2d4;aspect-ratio:1/1;cursor:pointer;flex:0 0 320px;scroll-snap-align:start;}
+.pcell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1s cubic-bezier(.25,.46,.45,.94);}
+.pcell:hover img{transform:scale(1.06);}
+.pcell .gov{padding:1.2rem;}
+.pcell .gov span{font-size:.56rem;letter-spacing:.16em;}
+
+/* FILM — dark, cinematic, matches the hero's palette so it reads as a continuation of
+   the showreel rather than a bolted-on video widget. */
+.film{background:#141210;padding-top:6.5rem;padding-bottom:6.5rem;text-align:center;}
+.film-label{justify-content:center;margin-bottom:1.6rem;}
+.film-label::before,.film-label::after{background:rgba(196,160,90,.3);}
+.film-label span,.film-label h2{color:var(--gold);}
+.film-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:1.3rem;color:#f3ece0;opacity:.8;margin-bottom:3rem;}
+.film-player{position:relative;max-width:1000px;margin:0 auto;aspect-ratio:16/9;background:#000;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.film-player video{width:100%;height:100%;object-fit:cover;display:block;}
+.film-play{position:absolute;inset:0;width:100%;height:100%;background:rgba(10,8,7,.28);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f3ece0;transition:background .4s;}
+.film-play:hover{background:rgba(10,8,7,.42);}
+.film-play svg{width:68px;height:68px;transition:transform .4s;}
+.film-play:hover svg{transform:scale(1.08);}
+.film-player.is-playing .film-play{display:none;}
+.film-caption{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(243,236,224,.55);margin-top:1.8rem;}
 
 /* TESTIMONIALS */
 .testimonials{background:#ffffff;padding-top:6.5rem;padding-bottom:6.5rem;}
@@ -374,19 +414,13 @@ footer{border-top:1px solid rgba(196,160,90,.08);padding:3.5rem 5rem;display:gri
   /* GALLERY */
   .gallery{padding-top:4rem;padding-bottom:4rem;}
   .gallery .sec-label{margin-bottom:2.2rem;}
-  .gallery-grid{
-    grid-template-columns:1fr 1fr;
-    grid-auto-rows:210px;
-    gap:12px;
-  }
-  .gcell{grid-column:span 1;grid-row:span 1;}
-  /* The tall B&W feature (span 2 rows on desktop) would strand an empty cell in this
-     2-column grid -- explicitly reset it here since its base-stylesheet rule has no
-     media query and would otherwise still win on specificity. */
-  .gcell:nth-child(5){grid-row:span 1;}
-  .gcell:nth-child(1),.gcell:nth-child(10){
-    grid-column:span 2;grid-row:span 1;
-  }
+  .gallery-chapter{margin:0 auto 1rem;font-size:1.05rem;padding:0 1.4rem;}
+  .gallery-strip{margin:0 -1.4rem 2rem;padding:0 1.4rem .5rem;gap:8px;}
+  .gcell{flex-basis:68vw;height:340px;}
+  .gcell-feature{flex-basis:78vw;}
+  .portraits{padding:2.4rem 1.4rem;margin:2.4rem 0;}
+  .portraits-grid{gap:8px;margin:0 -1.4rem;padding:0 1.4rem .4rem;}
+  .pcell{flex-basis:58vw;}
 
   /* TESTIMONIALS — horizontal swipe carousel, no JS: each card is a fixed-height
      snap point with its own inner scroll, so the page's vertical scroll doesn't
@@ -447,7 +481,11 @@ footer{border-top:1px solid rgba(196,160,90,.08);padding:3.5rem 5rem;display:gri
 #lb-close:hover{opacity:1;}
 #lb-close svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.5;}
 #lb-caption{position:absolute;bottom:1.8rem;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.5em;text-transform:uppercase;color:rgba(255,255,255,.3);white-space:nowrap;}
-#lb-arrow{position:absolute;bottom:1.8rem;right:2.2rem;font-family:'Cinzel',serif;font-size:.48rem;letter-spacing:.35em;color:rgba(255,255,255,.2);text-transform:uppercase;}
+.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.5;transition:opacity .25s;}
+.lb-arrow:hover{opacity:1;}
+.lb-arrow svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.3;}
+#lb-prev{left:1.2rem;}
+#lb-next{right:1.2rem;}
 @keyframes lbIn{from{opacity:0;transform:scale(.96);}to{opacity:1;transform:scale(1);}}
 .gcell{cursor:default;}
 
@@ -464,7 +502,7 @@ a,button,.gcell,.eq-opt,.eq-month,.eq-year,.eq-day,.eq-back,.eq-next,.eq-send,.e
 #lb-img{cursor:default;}
 
 /* Visible keyboard focus */
-a:focus-visible,button:focus-visible,.gcell:focus-visible,.eq-opt:focus-visible,.eq-day:focus-visible,.eq-month:focus-visible,.eq-year:focus-visible,#lb-close:focus-visible,.col-book-btn:focus-visible{outline:2px solid var(--gold-dk);outline-offset:3px;}
+a:focus-visible,button:focus-visible,.gcell:focus-visible,.eq-opt:focus-visible,.eq-day:focus-visible,.eq-month:focus-visible,.eq-year:focus-visible,#lb-close:focus-visible,.lb-arrow:focus-visible,.col-book-btn:focus-visible{outline:2px solid var(--gold-dk);outline-offset:3px;}
 
 /* WCAG AA contrast: darker gold for small text on light backgrounds */
 :root{--gold-text:#7a5c28;}
@@ -793,23 +831,63 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
 
 <section class="gallery" id="gallery">
   <div class="sec-label"><h2>Selected Weddings</h2></div>
-  <div class="gallery-grid">
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-2025.webp?v=2" alt="Bride and groom couple portrait at a Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Beneath the Veil &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-embrace-2025.webp?v=2" alt="Bride and groom embracing at golden hour in a forest, Pretoria wedding" width="1900" height="1267" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div><div class="gov"><span>Golden Hour &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-forest-2025.webp?v=2" alt="Bride and groom standing together in a forest at sunset, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Forest Light &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-couple-candid-2025.webp?v=2" alt="Bride looking at the groom candidly over his shoulder, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>A Glance &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil, Pretoria wedding" width="1110" height="1417" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Bridal Portrait &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-groom-details-2025.webp?v=2" alt="Groom's wedding day details flat lay with shoes, belt and stationery, Pretoria" width="1135" height="1386" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div><div class="gov"><span>Groom Details &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-window-2025.webp?v=2" alt="Bride posing beside a glass doorway in a fitted white gown, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>The Doorway &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-closeup-2025.webp?v=2" alt="Close bridal portrait in soft evening light, Pretoria wedding" width="1110" height="1664" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>Evening Portrait &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-bridal-2025.webp?v=2" alt="Bride holding her bouquet in an off-shoulder gown, Pretoria wedding" width="1108" height="1419" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center 15%;display:block;"></div><div class="gov"><span>Bridal &mdash; 2025</span></div></div>
-    <div class="gcell" onclick="lbOpen(this)"><div class="gcell-inner"><img src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss in black and white, Pretoria wedding" width="1114" height="1412" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"></div><div class="gov"><span>First Kiss &mdash; 2025</span></div></div>
+
+  <p class="gallery-chapter">Dean &amp; Bernelee Nortje</p>
+  <div class="gallery-strip">
+    <div class="gcell gcell-feature" onclick="lbOpen(this)"><img src="images/gallery-couple-embrace-2025.webp?v=2" alt="Bride and groom embracing at golden hour in a forest, Pretoria wedding" width="1900" height="1267" loading="lazy"><div class="gov"><span>Golden Hour &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-couple-forest-2025.webp?v=2" alt="Bride and groom standing together in a forest at sunset, Pretoria wedding" width="1110" height="1664" loading="lazy"><div class="gov"><span>Forest Light &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-couple-candid-2025.webp?v=2" alt="Bride looking at the groom candidly over his shoulder, Pretoria wedding" width="1110" height="1664" loading="lazy"><div class="gov"><span>A Glance &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-bridal-window-2025.webp?v=2" alt="Bride posing beside a glass doorway in a fitted white gown, Pretoria wedding" width="1110" height="1664" loading="lazy" style="object-position:center 15%;"><div class="gov"><span>The Doorway &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-bridal-closeup-2025.webp?v=2" alt="Close bridal portrait in soft evening light, Pretoria wedding" width="1110" height="1664" loading="lazy" style="object-position:center 15%;"><div class="gov"><span>Evening Portrait &mdash; 2025</span></div></div>
+  </div>
+
+  <div class="portraits">
+    <p class="portraits-label">Portraits &amp; Details</p>
+    <div class="portraits-grid">
+      <div class="pcell" onclick="lbOpen(this)"><img src="images/gallery-couple-2025.webp?v=2" alt="Bride and groom couple portrait at a Pretoria wedding" width="1110" height="1417" loading="lazy" style="object-position:center top;"><div class="gov"><span>Beneath the Veil</span></div></div>
+      <div class="pcell" onclick="lbOpen(this)"><img src="images/gallery-first-kiss-2025.webp?v=2" alt="Newlyweds share their first kiss in black and white, Pretoria wedding" width="1114" height="1412" loading="lazy"><div class="gov"><span>First Kiss</span></div></div>
+      <div class="pcell" onclick="lbOpen(this)"><img src="images/gallery-bridal-portrait-2025.webp?v=2" alt="Black and white bridal portrait in gown and veil, Pretoria wedding" width="1110" height="1417" loading="lazy" style="object-position:center 20%;"><div class="gov"><span>Bridal Portrait</span></div></div>
+      <div class="pcell" onclick="lbOpen(this)"><img src="images/gallery-groom-details-2025.webp?v=2" alt="Groom's wedding day details flat lay with shoes, belt and stationery, Pretoria" width="1135" height="1386" loading="lazy"><div class="gov"><span>Groom Details</span></div></div>
+      <div class="pcell" onclick="lbOpen(this)"><img src="images/gallery-bridal-2025.webp?v=2" alt="Bride holding her bouquet in an off-shoulder gown, Pretoria wedding" width="1108" height="1419" loading="lazy" style="object-position:center 15%;"><div class="gov"><span>Bridal</span></div></div>
+    </div>
+  </div>
+
+  <p class="gallery-chapter">Henrique &amp; Zhandre De Sousa Neves</p>
+  <div class="gallery-strip">
+    <div class="gcell gcell-feature" onclick="lbOpen(this)"><img src="images/gallery-laughing-embrace-2025.webp" alt="Bride and groom laughing together in black and white, Pretoria wedding" width="1110" height="1662" loading="lazy" style="object-position:center 25%;"><div class="gov"><span>Just Married &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-doorway-silhouette-2025.webp" alt="Groom silhouetted in a doorway before the ceremony, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Before the Vows &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-aisle-walk-2025.webp" alt="Bride walking down the aisle with her father, Pretoria wedding" width="1110" height="1662" loading="lazy" style="object-position:center 20%;"><div class="gov"><span>Down the Aisle &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-ceremony-wide-2025.webp" alt="Bride and groom holding hands at the altar under a floral arch, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>The Ceremony &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-altar-handhold-2025.webp" alt="Bride and groom holding hands during their vows, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>The Vows &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-first-kiss-altar-2025.webp" alt="Newlyweds share their first kiss at the altar, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>You May Kiss the Bride &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-greenery-kiss-2025.webp" alt="Bride and groom kissing amid greenery in black and white, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Among the Green &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-forest-walk-2025.webp" alt="Bride and groom walking hand in hand through the forest in black and white, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Wandering &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-bouquet-joy-2025.webp" alt="Bride joyfully raising her bouquet in black and white, Pretoria wedding" width="1110" height="1662" loading="lazy" style="object-position:center 25%;"><div class="gov"><span>Pure Joy &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-forest-embrace2-2025.webp" alt="Bride and groom embracing in the forest, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Together &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-cheek-kiss-2025.webp" alt="Groom kissing bride's cheek in the forest, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Tender Moment &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-bowtie-moment-2025.webp" alt="Groom adjusting his bowtie beside the bride, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Finishing Touches &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-passionate-kiss-2025.webp" alt="Bride and groom sharing a passionate kiss in black and white, Pretoria wedding" width="1110" height="1662" loading="lazy"><div class="gov"><span>Close &mdash; 2025</span></div></div>
+    <div class="gcell" onclick="lbOpen(this)"><img src="images/gallery-chin-kiss-2025.webp" alt="Groom holding bride's chin for a kiss in black and white, Pretoria wedding" width="1110" height="1662" loading="lazy" style="object-position:center 30%;"><div class="gov"><span>Forever &mdash; 2025</span></div></div>
   </div>
 
   <div class="section-cta fade">
     <p>Love what you <em>see?</em></p>
     <a href="#contact" class="section-cta-btn">Let&rsquo;s Talk</a>
   </div>
+</section>
+
+<section class="film" aria-label="Wedding film">
+  <div class="sec-label film-label"><h2>Watch the Film</h2></div>
+  <p class="film-sub">Photographs hold a moment. Film holds the way it felt.</p>
+  <div class="film-player" id="filmPlayer">
+    <video id="filmVideo" poster="images/film-jlo-mareli-poster.webp?v=1" preload="none" playsinline tabindex="-1">
+      <source src="images/film-jlo-mareli.mp4?v=1" type="video/mp4">
+    </video>
+    <button class="film-play" id="filmPlayBtn" aria-label="Play wedding film">
+      <svg viewBox="0 0 68 68" aria-hidden="true"><circle cx="34" cy="34" r="33" fill="none" stroke="currentColor" stroke-width="1"/><path d="M27 20 L48 34 L27 48 Z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <p class="film-caption">Jan-Louis &amp; Mareli &mdash; Rolling Waters, Pretoria</p>
 </section>
 
 <section class="testimonials" aria-label="Client reviews">
@@ -857,6 +935,14 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       </div>
       <div class="col-right">
         <p class="col-note" style="margin-bottom:1rem;font-style:italic;">An intimate, photography-only telling of your day.</p>
+        <ul class="col-features">
+          <li>6 hours of coverage</li>
+          <li>&plusmn;150 professionally edited photos</li>
+          <li>Details</li>
+          <li>Bride &amp; Groom</li>
+          <li>Couple shoot</li>
+          <li>Formalities (if time allows)</li>
+        </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R15 500</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Horizon','Photo only')">Book Now</a>
       </div>
@@ -869,6 +955,15 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       </div>
       <div class="col-right">
         <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A refined photography experience across your entire wedding day.</p>
+        <ul class="col-features">
+          <li>8 hours of coverage</li>
+          <li>&plusmn;350 professionally edited photos</li>
+          <li>Location, decor &amp; details</li>
+          <li>Bride &amp; Groom</li>
+          <li>Couple shoot</li>
+          <li>Ceremony</li>
+          <li>Formalities &amp; speeches (if time allows)</li>
+        </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R24 500</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Altitude','Photo only')">Book Now</a>
       </div>
@@ -881,6 +976,15 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       </div>
       <div class="col-right">
         <p class="col-note" style="margin-bottom:1rem;font-style:italic;">An editorial, fully-immersive photography production.</p>
+        <ul class="col-features">
+          <li>10 hours of coverage</li>
+          <li>&plusmn;550 professionally edited photos</li>
+          <li>Location, decor &amp; details</li>
+          <li>Bride &amp; Groom</li>
+          <li>Couple shoot</li>
+          <li>Ceremony</li>
+          <li>Formalities &amp; speeches</li>
+        </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R34 500</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Apex','Photo only')">Book Now</a>
       </div>
@@ -892,8 +996,9 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
         <div class="col-coverage">Photo Only</div>
       </div>
       <div class="col-right">
-        <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A bespoke photography-only experience, tailored entirely to your vision.</p>
-        <p class="col-note" style="margin-top:1.2rem;">Pricing on enquiry &middot; Every Observatory package is entirely bespoke</p>
+        <p class="col-note" style="margin-bottom:1.5rem;font-style:italic;">A bespoke photography-only experience, tailored entirely to your vision.</p>
+        <p style="font-family:'Raleway',sans-serif;font-size:.88rem;color:var(--mist);line-height:2;letter-spacing:.03em;">We customise everything to your needs &mdash; your story, your way. Get in touch and let&rsquo;s build something together.</p>
+        <p class="col-note" style="margin-top:1.5rem;">Pricing on enquiry &middot; Every Observatory package is entirely bespoke</p>
         <div class="col-price-row"><span class="col-price-label">Base Price</span><span class="col-price">R45 000</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Observatory','Photo only')">Book Now</a>
       </div>
@@ -908,6 +1013,14 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       </div>
       <div class="col-right">
         <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A beautifully cut film capturing the essence of your day.</p>
+        <ul class="col-features">
+          <li>6 hours of coverage</li>
+          <li>&plusmn;5 minute highlight film</li>
+          <li>Details</li>
+          <li>Bride &amp; Groom</li>
+          <li>Couple shoot</li>
+          <li>Formalities (if time allows)</li>
+        </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R17 500</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Horizon','Video only')">Book Now</a>
       </div>
@@ -920,6 +1033,15 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       </div>
       <div class="col-right">
         <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A cinematic short film telling your complete wedding story.</p>
+        <ul class="col-features">
+          <li>8 hours of coverage</li>
+          <li>&plusmn;7 minute highlight film</li>
+          <li>Location, decor &amp; details</li>
+          <li>Bride &amp; Groom</li>
+          <li>Couple shoot</li>
+          <li>Ceremony</li>
+          <li>Formalities &amp; speeches (if time allows)</li>
+        </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R27 500</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Altitude','Video only')">Book Now</a>
       </div>
@@ -932,6 +1054,16 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
       </div>
       <div class="col-right">
         <p class="col-note" style="margin-bottom:1rem;font-style:italic;">A luxury cinematic production, framed like a feature film.</p>
+        <ul class="col-features">
+          <li>10 hours of coverage</li>
+          <li>&plusmn;10 minute highlight film</li>
+          <li>Short film</li>
+          <li>Location, decor &amp; details</li>
+          <li>Bride &amp; Groom</li>
+          <li>Couple shoot</li>
+          <li>Ceremony</li>
+          <li>Formalities &amp; speeches</li>
+        </ul>
         <div class="col-price-row"><span class="col-price-label">Starting From</span><span class="col-price">R39 500</span></div>
         <a href="#contact" class="col-book-btn" onclick="bookNow('Apex','Video only')">Book Now</a>
       </div>
@@ -1466,6 +1598,12 @@ document.querySelectorAll('.fade').forEach(el=>io.observe(el));
   <div id="lb-close" title="Close">
     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </div>
+  <div id="lb-prev" class="lb-arrow" title="Previous">
+    <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg>
+  </div>
+  <div id="lb-next" class="lb-arrow" title="Next">
+    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+  </div>
   <img id="lb-img" src="" alt="" onclick="event.stopPropagation()">
   <span id="lb-caption"></span>
 </div>
@@ -1473,13 +1611,35 @@ document.querySelectorAll('.fade').forEach(el=>io.observe(el));
 <script>
 (function(){
   var lastOpener = null;
+  var currentIndex = -1;
   var closeBtn = document.getElementById('lb-close');
+  var prevBtn = document.getElementById('lb-prev');
+  var nextBtn = document.getElementById('lb-next');
   closeBtn.setAttribute('tabindex','0');
   closeBtn.setAttribute('role','button');
   closeBtn.setAttribute('aria-label','Close');
-  function lbOpen(el){
+  [prevBtn, nextBtn].forEach(function(btn){
+    btn.setAttribute('tabindex','0');
+    btn.setAttribute('role','button');
+  });
+  prevBtn.setAttribute('aria-label','Previous photo');
+  nextBtn.setAttribute('aria-label','Next photo');
+
+  /* Every openable photo across every gallery/carousel on the page, in document order --
+     arrows walk this single list so "next" always means the next photo a visitor would
+     naturally encounter, regardless of which strip or grid it lives in. */
+  function items(){
+    return Array.prototype.slice.call(document.querySelectorAll('.gcell, .pcell'));
+  }
+
+  function showIndex(i){
+    var all = items();
+    if(!all.length) return;
+    i = (i + all.length) % all.length;
+    currentIndex = i;
+    var el = all[i];
     lastOpener = el;
-    var img = el.querySelector('.gcell-inner img');
+    var img = el.querySelector('img');
     var url = img ? img.src : '';
     var govSpan = el.querySelector('.gov span');
     var caption = govSpan ? govSpan.textContent : '';
@@ -1487,6 +1647,12 @@ document.querySelectorAll('.fade').forEach(el=>io.observe(el));
     lbImg.src = url;
     lbImg.alt = img ? img.alt : '';
     document.getElementById('lb-caption').textContent = caption;
+    el.scrollIntoView({block:'nearest', inline:'nearest'});
+  }
+
+  function lbOpen(el){
+    var all = items();
+    showIndex(all.indexOf(el));
     document.getElementById('lb-overlay').classList.add('open');
     document.body.style.overflow = 'hidden';
     closeBtn.focus();
@@ -1497,14 +1663,50 @@ document.querySelectorAll('.fade').forEach(el=>io.observe(el));
     document.body.style.overflow = '';
     if(lastOpener){ lastOpener.focus(); lastOpener = null; }
   }
+  function lbPrev(e){ if(e){ e.stopPropagation(); } showIndex(currentIndex - 1); }
+  function lbNext(e){ if(e){ e.stopPropagation(); } showIndex(currentIndex + 1); }
+
   closeBtn.addEventListener('keydown', function(e){
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); lbClose(); }
   });
+  prevBtn.addEventListener('click', lbPrev);
+  nextBtn.addEventListener('click', lbNext);
+  [prevBtn, nextBtn].forEach(function(btn, idx){
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); (idx === 0 ? lbPrev : lbNext)(); }
+    });
+  });
   document.addEventListener('keydown', function(e){
+    if(!document.getElementById('lb-overlay').classList.contains('open')) return;
     if(e.key === 'Escape') lbClose();
+    else if(e.key === 'ArrowLeft') lbPrev();
+    else if(e.key === 'ArrowRight') lbNext();
   });
   window.lbOpen = lbOpen;
   window.lbClose = lbClose;
+})();
+</script>
+
+<script>
+(function(){
+  /* The film loads nothing until the visitor asks for it — preload="none" plus a custom
+     play button, so a 40MB+ video never touches page-load performance. Native `controls`
+     is withheld until that first click too: with it present from the start, the browser's
+     own control-bar layer can sit above the custom button and swallow the click (most
+     reliably reproduced in Safari) before our handler ever runs. Once the film has
+     actually started, native controls take over permanently and the custom button never
+     reappears -- no double play/pause affordance fighting for the same click. */
+  var player = document.getElementById('filmPlayer');
+  var video = document.getElementById('filmVideo');
+  var playBtn = document.getElementById('filmPlayBtn');
+  if(!player || !video || !playBtn) return;
+  function start(){
+    video.controls = true;
+    player.classList.add('is-playing');
+    var p = video.play();
+    if(p && p.catch) p.catch(function(){ player.classList.remove('is-playing'); });
+  }
+  playBtn.addEventListener('click', start);
 })();
 </script>
 
@@ -1802,11 +2004,11 @@ document.addEventListener('DOMContentLoaded', function(){
     gsap.fromTo('.mani-big .w', {opacity:.12}, {opacity:1, stagger:.06, ease:'none',
       scrollTrigger:{trigger:'.manifesto', start:'top 78%', end:'top 30%', scrub:true}});
 
-    gsap.set('.gcell', {y:44, autoAlpha:0});
-    gsap.set('.gcell-inner img', {scale:1.12});
-    ScrollTrigger.batch('.gcell', {start:'top 90%', once:true, onEnter:function(batch){
+    gsap.set('.gcell, .pcell', {y:44, autoAlpha:0});
+    gsap.set('.gcell img, .pcell img', {scale:1.12});
+    ScrollTrigger.batch('.gcell, .pcell', {start:'top 90%', once:true, onEnter:function(batch){
       gsap.to(batch, {y:0, autoAlpha:1, duration:1.25, stagger:.09, ease:EXPO});
-      gsap.to(batch.map(function(b){return b.querySelector('.gcell-inner img');}),
+      gsap.to(batch.map(function(b){return b.querySelector('img');}),
         {scale:1, duration:1.6, stagger:.09, ease:EXPO});
     }});
   }
