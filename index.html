@@ -1411,10 +1411,6 @@ nav{transition:top .5s var(--ease),padding .3s,background .3s,border-color .3s;}
           <input type="text" id="eqVenue" placeholder="e.g. Shepstone Gardens, or still deciding">
         </div>
         <div class="eq-field">
-          <label>Estimated Guest Count</label>
-          <input type="text" id="eqGuests" placeholder="e.g. 120">
-        </div>
-        <div class="eq-field">
           <label>What Are You Looking For?</label>
           <div class="eq-checks">
             <label class="eq-check"><input type="checkbox" name="lookingFor" value="Photography">Photography</label>
@@ -1446,7 +1442,6 @@ function sendEnquiry(e){
   var names = document.getElementById('eqNames').value.trim() || 'Not specified';
   var date = document.getElementById('eqDate').value.trim() || 'Not specified';
   var venue = document.getElementById('eqVenue').value.trim() || 'Not specified';
-  var guests = document.getElementById('eqGuests').value.trim() || 'Not specified';
   var details = document.getElementById('eqDetails').value.trim();
   var lookingFor = Array.prototype.map.call(
     document.querySelectorAll('input[name="lookingFor"]:checked'),
@@ -1458,7 +1453,6 @@ function sendEnquiry(e){
   lines.push('*Names:* ' + names);
   lines.push('*Wedding Date:* ' + date);
   lines.push('*Venue:* ' + venue);
-  lines.push('*Estimated Guests:* ' + guests);
   lines.push('*Looking For:* ' + lookingFor);
   if(details) lines.push('*About Their Day:* ' + details);
   var msg = encodeURIComponent(lines.join('\n'));
