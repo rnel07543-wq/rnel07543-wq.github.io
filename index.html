@@ -1921,6 +1921,13 @@ document.addEventListener('DOMContentLoaded', function(){
     video.addEventListener('loadeddata', activateVideo);
     video.addEventListener('error', function(){ video.remove(); videoPlayingResolve(); });
     if(video.readyState >= 2) activateVideo();
+    /* Some mobile browsers (notably iOS Safari/Chrome under Low Power Mode or a
+       restrictive data setting) never even start buffering an autoplay video without
+       a user gesture first -- 'loadeddata' then never fires, so play() is never
+       attempted and the retry-on-tap listeners below (previously only armed inside
+       the failed-play .catch()) never got attached. Arm them unconditionally so the
+       first tap always has something to catch, even when play() was never tried. */
+    armRetry();
   }
 
   /* Hero photo loop — slow Ken Burns crossfade through real client photography.
